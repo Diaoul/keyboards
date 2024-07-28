@@ -1,0 +1,11 @@
+# direnv
+.direnv/
+
+# build artifacts
+qmk/compile_commands.json
+qmk/.cache/
+
+# firmware files
+*.hex
+*.bin
+*.uf2

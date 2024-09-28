@@ -6,35 +6,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_GRV  , KC_Q , KC_W , KC_F , KC_P   , KC_B    ,                          KC_J    , KC_L   , KC_U    , KC_Y   , KC_QUOT , KC_MINS,
   KC_ESC  , HR_A , HR_R , HR_S , HR_T   , KC_G    ,                          KC_M    , HR_N   , HR_E    , HR_I   , HR_O    , KC_QUES,
   KC_LPRN , KC_Z , KC_X , KC_C , KC_D   , KC_V    ,                          KC_K    , KC_H   , KC_COMM , KC_DOT , KC_SLSH , KC_RPRN,
-                                 KC_ESC , NUM_TAB , NAV_SPC ,     SYM_BSPC , SYM_ENT , QK_REP                                       
+                                 KC_ESC , NUM_TAB , NAV_SPC ,     SYM_BSPC , SYM_ENT , QK_REP
 ),
 
 [_SYMBOLS] = LAYOUT_split_3x6_3(
   KC_EXLM , KC_AMPR , KC_COLN , KC_PLUS , KC_PERC , KC_TILD ,                        _______ , _______ , _______ , _______ , _______ , _______,
   KC_HASH , KC_CIRC , KC_DLR  , KC_UNDS , KC_EQL  , KC_ASTR ,                        _______ , KC_RCTL , KC_RSFT , KC_RGUI , KC_RALT , _______,
   KC_AT   , KC_LT   , KC_PIPE , KC_MINS , KC_GT   , KC_SLSH ,                        _______ , _______ , _______ , _______ , _______ , _______,
-                                          KC_BSLS , KC_TAB  , KC_SPC ,     _______ , _______ , _______                                        
+                                          KC_BSLS , KC_TAB  , KC_SPC ,     _______ , _______ , _______
 ),
 
 [_NUMPAD] = LAYOUT_split_3x6_3(
   _______ , _______ , _______ , _______ , _______ , _______ ,                      KC_PERC , KC_7    , KC_8 , KC_9 , KC_COLN  , _______,
   _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                      KC_PLUS , KC_1    , KC_2 , KC_3 , KC_MINUS , _______,
   _______ , _______ , _______ , _______ , _______ , _______ ,                      KC_ASTR , KC_4    , KC_5 , KC_6 , KC_SLSH  , _______,
-                                          _______ , _______ , _______ ,     KC_0 , KC_DOT  , KC_COMM                                   
+                                          _______ , _______ , _______ ,     KC_0 , KC_DOT  , KC_COMM
 ),
 
 [_NAVIGATION] = LAYOUT_split_3x6_3(
-  _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , _______ , _______ , _______ , _______ , _______,
-  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         KC_LEFT , KC_DOWN , KC_UP   , KC_RGHT , _______ , _______,
-  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_HOME , KC_PGDN , KC_PGUP , KC_END  , _______ , _______,
-                                          _______ , _______ , _______ ,     _______ , _______ , _______                                        
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , _______ , _______ , _______ , RGB_TOG          , RGB_HUI,
+  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         KC_LEFT , KC_DOWN , KC_UP   , KC_RGHT , RGB_MODE_FORWARD , RGB_HUD,
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_HOME , KC_PGDN , KC_PGUP , KC_END  , RGB_VAD          , RGB_VAI,
+                                          _______ , _______ , _______ ,     _______ , _______ , _______
 ),
 
 [_FUNCTION] = LAYOUT_split_3x6_3(
   _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , KC_F7   , KC_F8 , KC_F9 , KC_F10 , _______,
   _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         _______ , KC_F1   , KC_F2 , KC_F3 , KC_F11 , _______,
   _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , KC_F1   , KC_F5 , KC_F6 , KC_F12 , _______,
-                                          _______ , _______ , _______ ,     _______ , _______ , _______                                   
+                                          _______ , _______ , _______ ,     _______ , _______ , _______
 )
 };
 // clang-format on

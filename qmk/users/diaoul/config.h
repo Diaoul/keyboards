@@ -7,7 +7,7 @@
 #define ONESHOT_TIMEOUT 1000
 
 // Combos (see https://docs.qmk.fm/features/combos)
-#define COMBO_TERM 30
+#define COMBO_TERM 25
 #define EXTRA_SHORT_COMBOS
 #define COMBO_STRICT_TIMER
 

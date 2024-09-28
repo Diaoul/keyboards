@@ -13,10 +13,10 @@ COMBO_ENABLE = yes
 SRC += diaoul.c
 
 ifeq ($(strip $(OLED_ENABLE)), yes)
-	SRC += features/oled.c
+  SRC += features/oled.c
 endif
 ifeq ($(strip $(KEY_OVERRIDE_ENABLE)), yes)
-	SRC += features/overrides.c
+  SRC += features/overrides.c
 endif
 
 INTROSPECTION_KEYMAP_C = features/combos.c

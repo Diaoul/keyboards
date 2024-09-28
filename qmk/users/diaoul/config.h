@@ -1,9 +1,11 @@
 #pragma once
 
 // Tap hold (see https://docs.qmk.fm/tap_hold)
-#define TAPPING_TERM 220
-#define QUICK_TAP_TERM 0
+#define TAPPING_TERM 175
 #define PERMISSIVE_HOLD
+#define QUICK_TAP_TERM_PER_KEY
+
+// One-shot keys (see https://docs.qmk.fm/one_shot_keys)
 #define ONESHOT_TIMEOUT 1000
 
 // Combos (see https://docs.qmk.fm/features/combos)

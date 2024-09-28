@@ -7,3 +7,8 @@ git fetch
 git checkout "$(git describe --tags --abbrev=0 origin/master)"
 qmk git-submodule
 popd || exit
+
+# Update getreuer
+pushd qmk/getreuer || exit
+git pull
+popd || exit

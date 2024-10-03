@@ -19,10 +19,10 @@ endif
 ifeq ($(strip $(KEY_OVERRIDE_ENABLE)), yes)
   SRC += features/overrides.c
 endif
+ifeq ($(strip $(COMBO_ENABLE)), yes)
+  SRC += features/combos.c
+endif
 ifeq ($(strip $(ACHORDION_ENABLE)), yes)
   SRC += features/getreuer/achordion.c
   OPT_DEFS += -DACHORDION_ENABLE
-endif
-ifeq ($(strip $(COMBO_ENABLE)), yes)
-INTROSPECTION_KEYMAP_C = features/combos.c
 endif

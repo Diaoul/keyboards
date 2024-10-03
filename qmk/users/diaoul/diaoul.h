@@ -7,6 +7,12 @@
 #ifdef OLED_ENABLE
 #    include "features/oled.h"
 #endif
+#ifdef KEY_OVERRIDE_ENABLE
+#    include "features/overrides.h"
+#endif
+#ifdef COMBO_ENABLE
+#    include "features/combos.h"
+#endif
 #ifdef ACHORDION_ENABLE
 #    include "features/getreuer/achordion.h"
 #endif

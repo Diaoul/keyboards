@@ -50,4 +50,24 @@ bool achordion_eager_mod(uint8_t mod) {
             return false;
     }
 }
+
+bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
+    // Allow some same-hand holds on the left side for keyboard + mouse usage
+    switch (tap_hold_keycode) {
+        case HR_T: // Control
+            switch (other_keycode) {
+                case KC_A: // Select all
+                case KC_X: // Cut
+                case KC_C: // Copy
+                case KC_V: // Paste (although hard to do this one)
+                case KC_Z: // Undo
+                case HR_R: // Reload
+                case KC_W: // Close tab
+                    return true;
+            }
+            break;
+    }
+
+    return achordion_opposite_hands(tap_hold_record, other_record);
+}
 #endif

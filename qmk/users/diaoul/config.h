@@ -16,7 +16,7 @@
 // Caps Word (see https://docs.qmk.fm/features/caps_word)
 #define BOTH_SHIFTS_TURNS_ON_CAPS_WORD
 #define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
-#define CAPS_WORD_IDLE_TIMEOUT 1000
+#define CAPS_WORD_IDLE_TIMEOUT 3000
 
 // Repeat key (see https://docs.qmk.fm/features/repeat_key)
 #define NO_ALT_REPEAT_KEY

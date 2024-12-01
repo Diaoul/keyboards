@@ -52,8 +52,8 @@ bool achordion_eager_mod(uint8_t mod) {
 }
 
 bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
-    // Allow some same-hand holds on the left side for keyboard + mouse usage
     switch (tap_hold_keycode) {
+        // Allow some same-hand holds on the left side for keyboard + mouse usage
         case HR_T: // Control
             switch (other_keycode) {
                 case KC_A: // Select all
@@ -66,6 +66,11 @@ bool achordion_chord(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, ui
                     return true;
             }
             break;
+    }
+
+    // Allow same-hand holds when the other key is in the rows below the alphas
+    if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 3) {
+        return true;
     }
 
     return achordion_opposite_hands(tap_hold_record, other_record);

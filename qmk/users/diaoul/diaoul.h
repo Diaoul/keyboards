@@ -10,6 +10,9 @@
 #ifdef KEY_OVERRIDE_ENABLE
 #    include "features/overrides.h"
 #endif
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+#    include "features/custom_shift_keys.h"
+#endif
 #ifdef COMBO_ENABLE
 #    include "features/combos.h"
 #endif

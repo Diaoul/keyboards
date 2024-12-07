@@ -17,6 +17,11 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 
 // Process record
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef CUSTOM_SHIFT_KEYS_ENABLE
+    if (!process_custom_shift_keys(keycode, record)) {
+        return false;
+    }
+#endif
 #ifdef ACHORDION_ENABLE
     if (!process_achordion(keycode, record)) {
         return false;

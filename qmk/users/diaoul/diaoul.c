@@ -2,12 +2,16 @@
 
 // Quick tap term
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
-    // Disable key repeating and force hold behavior for some keys
+    // Enable key repeating for some keys
     switch (keycode) {
-        case NAV_SPC:
-            return 0;
-        default:
+        // Home row mods for ALT and GUI
+        case HR_A:
+        case HR_R:
+        case HR_E:
+        case HR_I:
             return QUICK_TAP_TERM;
+        default:
+            return 0;
     }
 }
 

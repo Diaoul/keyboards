@@ -9,7 +9,6 @@ CAPS_WORD_ENABLE ?= yes
 KEY_OVERRIDE_ENABLE ?= no
 CUSTOM_SHIFT_KEYS_ENABLE ?= yes
 COMBO_ENABLE ?= yes
-ACHORDION_ENABLE ?= yes
 # AUTOCORRECT_ENABLE ?= yes
 
 SRC += diaoul.c
@@ -26,8 +25,4 @@ ifeq ($(strip $(CUSTOM_SHIFT_KEYS_ENABLE)), yes)
 endif
 ifeq ($(strip $(COMBO_ENABLE)), yes)
   SRC += features/combos.c
-endif
-ifeq ($(strip $(ACHORDION_ENABLE)), yes)
-  SRC += features/getreuer/achordion.c
-  OPT_DEFS += -DACHORDION_ENABLE
 endif

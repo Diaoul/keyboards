@@ -3,6 +3,7 @@
 // Tap hold (see https://docs.qmk.fm/tap_hold)
 #define TAPPING_TERM 175
 #define PERMISSIVE_HOLD
+#define CHORDAL_HOLD
 #define QUICK_TAP_TERM_PER_KEY
 
 // One-shot keys (see https://docs.qmk.fm/one_shot_keys)

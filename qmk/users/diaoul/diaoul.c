@@ -1,4 +1,8 @@
-#include "diaoul.h"
+#include "definitions/layers.h"
+#include "definitions/keycodes.h"
+#ifdef OLED_ENABLE
+#    include "features/oled.h"
+#endif
 
 // Quick tap term
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
@@ -15,16 +19,56 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-// Process record
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-#ifdef CUSTOM_SHIFT_KEYS_ENABLE
-    if (!process_custom_shift_keys(keycode, record)) {
-        return false;
-    }
-#endif
+// Custom shift keys (https://getreuer.info/posts/keyboards/custom-shift-keys)
+#ifdef COMMUNITY_MODULE_CUSTOM_SHIFT_KEYS_ENABLE
+const custom_shift_key_t custom_shift_keys[] = {
+    {KC_BSPC, KC_DEL},
+    {KC_DOT, KC_COLN},
+    {KC_COMM, KC_SCLN},
+    {KC_QUES, KC_EXLM},
+};
+#endif // COMMUNITY_MODULE_CUSTOM_SHIFT_KEYS_ENABLE
 
-    return true;
-}
+// Key overrides (https://docs.qmk.fm/features/key_overrides)
+#ifdef KEY_OVERRIDE_ENABLE
+const key_override_t del_key_override  = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+const key_override_t dot_key_override  = ko_make_basic(MOD_MASK_SHIFT, KC_DOT, KC_COLN);
+const key_override_t comm_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_COMM, KC_SCLN);
+const key_override_t ques_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_QUES, KC_EXLM);
+
+const key_override_t *key_overrides[] = {
+    &del_key_override,
+    &dot_key_override,
+    &comm_key_override,
+    &ques_key_override,
+};
+#endif // KEY_OVERRIDE_ENABLE
+
+// Commbos (https://docs.qmk.fm/features/combo)
+#ifdef COMBO_ENABLE
+// top row left
+const uint16_t PROGMEM fp_combo[] = {KC_F, KC_P, COMBO_END};
+const uint16_t PROGMEM fw_combo[] = {KC_F, KC_W, COMBO_END};
+const uint16_t PROGMEM wp_combo[] = {KC_W, KC_P, COMBO_END};
+// top row right
+const uint16_t PROGMEM lu_combo[] = {KC_L, KC_U, COMBO_END};
+const uint16_t PROGMEM uy_combo[] = {KC_U, KC_Y, COMBO_END};
+const uint16_t PROGMEM ly_combo[] = {KC_L, KC_Y, COMBO_END};
+// home row mixed
+const uint16_t PROGMEM se_combo[] = {HR_S, HR_E, COMBO_END};
+
+combo_t key_combos[] = {
+    // top row
+    COMBO(fp_combo, KC_LPRN),
+    COMBO(fw_combo, KC_LBRC),
+    COMBO(wp_combo, KC_LCBR),
+    COMBO(lu_combo, KC_RPRN),
+    COMBO(uy_combo, KC_RBRC),
+    COMBO(ly_combo, KC_RCBR),
+    // home row
+    COMBO(se_combo, CW_TOGG),
+};
+#endif
 
 // Chordal Hold
 #ifdef CHORDAL_HOLD

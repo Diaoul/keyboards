@@ -9,6 +9,6 @@ qmk git-submodule
 popd || exit
 
 # Update getreuer
-pushd qmk/getreuer || exit
+pushd qmk/modules/getreuer || exit
 git pull
 popd || exit

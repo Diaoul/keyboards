@@ -1,7 +1,5 @@
 #pragma once
 
-#include "layers.h"
-
 // Layer-taps
 #define NUM_TAB LT(_NUMPAD, KC_TAB)
 #define NAV_SPC LT(_NAVIGATION, KC_SPC)

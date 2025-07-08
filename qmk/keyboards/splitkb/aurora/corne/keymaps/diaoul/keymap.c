@@ -1,4 +1,4 @@
-#include "diaoul.h"
+#include "diaoul.c"
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -17,23 +17,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 [_NUMPAD] = LAYOUT_split_3x6_3(
-  _______ , _______ , _______ , _______ , _______ , _______ ,                      KC_PERC , KC_7    , KC_8 , KC_9 , KC_COLN  , _______,
-  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                      KC_PLUS , KC_1    , KC_2 , KC_3 , KC_MINUS , _______,
-  _______ , _______ , _______ , _______ , _______ , _______ ,                      KC_ASTR , KC_4    , KC_5 , KC_6 , KC_SLSH  , _______,
-                                          _______ , _______ , _______ ,     KC_0 , KC_DOT  , KC_COMM
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_PERC , KC_7   , KC_8 , KC_9 , KC_COLN  , KC_COMM,
+  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         KC_PLUS , KC_1   , KC_2 , KC_3 , KC_MINUS , KC_DOT ,
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_ASTR , KC_4   , KC_5 , KC_6 , KC_SLSH  , _______,
+                                          _______ , _______ , _______ ,     KC_BSPC , KC_0    , KC_DOT
 ),
 
 [_NAVIGATION] = LAYOUT_split_3x6_3(
-  _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , _______ , _______ , _______ , RGB_TOG          , RGB_HUI,
-  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         KC_LEFT , KC_DOWN , KC_UP   , KC_RGHT , RGB_MODE_FORWARD , RGB_HUD,
-  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_HOME , KC_PGDN , KC_PGUP , KC_END  , RGB_VAD          , RGB_VAI,
-                                          _______ , _______ , _______ ,     _______ , _______ , _______
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         RM_TOGG , RM_VALD , RM_VALU , RM_NEXT , RM_HUEU , RM_HUED,
+  _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         KC_LEFT , KC_DOWN , KC_UP   , KC_RGHT , RM_SATU , RM_SATD,
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         KC_HOME , KC_PGDN , KC_PGUP , KC_END  , RM_SPDU , RM_SPDD,
+                                          _______ , _______ , _______ ,     KC_BSPC , _______ , _______
 ),
 
 [_FUNCTION] = LAYOUT_split_3x6_3(
   _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , KC_F7   , KC_F8 , KC_F9 , KC_F10 , _______,
   _______ , KC_LALT , KC_LGUI , KC_LSFT , KC_LCTL , _______ ,                         _______ , KC_F1   , KC_F2 , KC_F3 , KC_F11 , _______,
-  _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , KC_F1   , KC_F5 , KC_F6 , KC_F12 , _______,
+  _______ , _______ , _______ , _______ , _______ , _______ ,                         _______ , KC_F4   , KC_F5 , KC_F6 , KC_F12 , _______,
                                           _______ , _______ , _______ ,     _______ , _______ , _______
 )
 };
@@ -114,32 +114,3 @@ bool oled_task_user(void) {
     return false;
 }
 #endif
-
-// TODO:
-// Now
-// - Visualizations with GitHub Actions
-// - Add copy paste keys
-// - Add getreuer's features in the repo like [rafaelromao](https://github.com/rafaelromao/qmk_userspace/) (SELWORD, etc.)
-// Later
-// - Add a layer for mouse keys
-// - Add media keys
-// - Autocorrection for colemak deficiencies with OLED indicator
-// - Add RGB controls
-// - Add bakcspace to the home row on layers
-// - Fix layout formatting in qmk.nvim
-//
-
-/*
- * BASE layer
- * Goal is to type english text and markdown without quitting that layer
- * - We don't touch alphas
- * - Combos for brackets, especially ()
- * - Punctuation tweaed with better shifted symbols
- * - Quotes
- * SYM layer
- * - Underscore does not combine with any other symbol, putting it on the thumb cluster?
- * - Keep space on the thumb cluster to continue typing symbols like ` == `
- * - Home row contains =, _
- * - I don't need quotes on that layer, they don't combine with other symbols
- *
- */

@@ -25,6 +25,10 @@
 // Firmware size optimizations (see https://docs.qmk.fm/squeezing_avr)
 #define LAYER_STATE_8BIT
 
+// RGB (https://docs.qmk.fm/features/rgblight#configuration)
+#define RBGLIGHT_HUE_STEP 4
+#define RGBLIGHT_SLEEP
+
 // Custom OLED font
 #ifdef OLED_ENABLE
 #    ifdef OLED_FONT_H

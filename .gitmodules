@@ -1,6 +1,6 @@
 [submodule "qmk/qmk_firmware"]
 	path = qmk/qmk_firmware
 	url = https://github.com/qmk/qmk_firmware
-[submodule "qmk/getreuer"]
-	path = qmk/getreuer
-	url = https://github.com/getreuer/qmk-keymap
+[submodule "qmk/modules/getreuer"]
+	path = qmk/modules/getreuer
+	url = https://github.com/getreuer/qmk-modules.git

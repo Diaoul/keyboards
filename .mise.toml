@@ -1,0 +1,2 @@
+[env]
+QMK_HOME = "{{config_root}}/qmk/qmk_firmware"

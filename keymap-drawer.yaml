@@ -1,0 +1,114 @@
+parse_config:
+  trans_legend:
+    t: " "
+  qmk_keycode_map:
+    # custom
+    BSPC: { t: $$mdi:backspace-outline$$ }
+    ENT: { t: $$mdi:keyboard-return$$ }
+    ESC: { t: $$mdi:keyboard-esc$$ }
+    SPC: { t: $$mdi:keyboard-space$$ }
+    HR_A: { t: A, h: Alt }
+    HR_R: { t: R, h: Gui }
+    HR_S: { t: S, h: Shift }
+    HR_T: { t: T, h: Ctrl }
+    HR_N: { t: N, h: Ctrl }
+    HR_E: { t: E, h: Shift }
+    HR_I: { t: I, h: Gui }
+    HR_O: { t: O, h: Alt }
+    LALT: Alt
+    LGUI: Gui
+    LSFT: Shift
+    LCTL: Ctrl
+    QK_REP: Rep
+    OS_LSFT: OS Shift
+    NAV_SPC: { t: $$mdi:keyboard-space$$, h: Nav }
+    SYM_BSPC: { t: $$mdi:backspace-outline$$, h: Sym }
+    SYM_ENT: { t: $$mdi:keyboard-return$$, h: Sym }
+    NUM_TAB: { t: $$mdi:keyboard-tab$$, h: Num }
+    UP: { t: $$mdi:arrow-up$$ }
+    DOWN: { t: $$mdi:arrow-down$$ }
+    LEFT: { t: $$mdi:arrow-left$$ }
+    RGHT: { t: $$mdi:arrow-right$$ }
+    HOME: Home
+    END: End
+    PGUP: Page Up
+    PGDN: Page Down
+    RM_TOGG: Toggle LED
+    RM_NEXT: Cycle Effect
+    RM_VALU: Bright Up
+    RM_VALD: Bright Down
+    RM_HUEU: Hue Up
+    RM_HUED: Hue Down
+    RM_SATU: Sat Up
+    RM_SATD: Sat Down
+    RM_SPDU: Speed Up
+    RM_SPDD: Speed Down
+    # default
+    XXXXXXX: ""
+    "NO": ""
+    MINUS: "-"
+    MINS: "-"
+    EQUAL: "="
+    EQL: "="
+    LEFT_BRACKET: "["
+    LBRC: "["
+    RIGHT_BRACKET: "]"
+    RBRC: "]"
+    BACKSLASH: \
+    BSLS: \
+    NONUS_HASH: "#"
+    NUHS: "#"
+    SEMICOLON: ;
+    SCLN: ;
+    QUOTE: "'"
+    QUOT: "'"
+    GRAVE: "`"
+    GRV: "`"
+    COMMA: ","
+    COMM: ","
+    DOT: .
+    SLASH: /
+    SLSH: /
+    TILDE: "~"
+    TILD: "~"
+    EXCLAIM: "!"
+    EXLM: "!"
+    AT: "@"
+    HASH: "#"
+    DOLLAR: $
+    DLR: $
+    PERCENT: "%"
+    PERC: "%"
+    CIRCUMFLEX: ^
+    CIRC: ^
+    AMPERSAND: "&"
+    AMPR: "&"
+    ASTERISK: "*"
+    ASTR: "*"
+    LEFT_PAREN: (
+    LPRN: (
+    RIGHT_PAREN: )
+    RPRN: )
+    UNDERSCORE: _
+    UNDS: _
+    PLUS: +
+    LEFT_CURLY_BRACE: "{"
+    LCBR: "{"
+    RIGHT_CURLY_BRACE: "}"
+    RCBR: "}"
+    PIPE: "|"
+    COLON: ":"
+    COLN: ":"
+    DOUBLE_QUOTE: '"'
+    DQUO: '"'
+    DQT: '"'
+    LEFT_ANGLE_BRACKET: <
+    LABK: <
+    LT: <
+    RIGHT_ANGLE_BRACKET: ">"
+    RABK: ">"
+    GT: ">"
+    QUESTION: "?"
+    QUES: "?"
+draw_config:
+  dark_mode: auto

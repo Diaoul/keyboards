@@ -1,10 +1,10 @@
 #pragma once
 
 // Layer-taps
-#define NUM_TAB LT(_NUMPAD, KC_TAB)
-#define NAV_SPC LT(_NAVIGATION, KC_SPC)
-#define SYM_BSPC LT(_SYMBOLS, KC_BSPC)
-#define SYM_ENT LT(_SYMBOLS, KC_ENT)
+#define NUM_TAB LT(NUM, KC_TAB)
+#define NAV_SPC LT(NAV, KC_SPC)
+#define SYM_BSPC LT(SYM, KC_BSPC)
+#define SYM_ENT LT(SYM, KC_ENT)
 
 // Mod-taps
 // Home row mods

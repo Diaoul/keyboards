@@ -41,19 +41,19 @@ void render_layer_state(uint8_t col, uint8_t line) {
     oled_set_cursor(col, line + 1);
     oled_write_P(layer_2_1, false);
     switch (get_highest_layer(layer_state | default_layer_state)) {
-        case _NAVIGATION:
+        case NAV:
             oled_write_P(arrows, false);
             break;
-        case _SYMBOLS:
+        case SYM:
             oled_write_P(PSTR("#$%"), false);
             break;
-        case _NUMPAD:
+        case NUM:
             oled_write_P(PSTR("123"), false);
             break;
-        case _FUNCTION:
+        case FUN:
             oled_write_P(PSTR("fun"), false);
             break;
-        case _SYSTEM:
+        case SYS:
             oled_write_P(PSTR("sys"), false);
             break;
         default:

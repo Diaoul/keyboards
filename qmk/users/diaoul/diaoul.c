@@ -128,6 +128,8 @@ const uint16_t PROGMEM uy_combo[] = {KC_U, KC_Y, COMBO_END};
 const uint16_t PROGMEM ly_combo[] = {KC_L, KC_Y, COMBO_END};
 // home row mixed
 const uint16_t PROGMEM se_combo[] = {HR_S, HR_E, COMBO_END};
+// others
+const uint16_t PROGMEM fn_combo[] = {KC_F, HR_N, COMBO_END};
 
 combo_t key_combos[] = {
     // top row
@@ -139,6 +141,8 @@ combo_t key_combos[] = {
     COMBO(ly_combo, KC_RCBR),
     // home row
     COMBO(se_combo, CW_TOGG),
+    // others
+    COMBO(fn_combo, OSL(FUN)),
 };
-#endif
+#endif // COMBO_ENABLE
 

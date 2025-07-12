@@ -11,9 +11,8 @@
 // One-shot keys (see https://docs.qmk.fm/one_shot_keys)
 #define ONESHOT_TIMEOUT 1000
 
-// Combos (see https://docs.qmk.fm/features/combos)
-#define COMBO_TERM 25
-#define EXTRA_SHORT_COMBOS
+// Combos (see https://docs.qmk.fm/features/combo)
+#define COMBO_TERM 30
 #define COMBO_STRICT_TIMER
 
 // Caps Word (see https://docs.qmk.fm/features/caps_word)
@@ -26,6 +25,7 @@
 
 // Firmware size optimizations (see https://docs.qmk.fm/squeezing_avr)
 #define LAYER_STATE_8BIT
+#define EXTRA_SHORT_COMBOS
 
 // RGB (https://docs.qmk.fm/features/rgblight#configuration)
 #define RBGLIGHT_HUE_STEP 4

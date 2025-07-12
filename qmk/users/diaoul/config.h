@@ -1,10 +1,12 @@
 #pragma once
 
 // Tap hold (see https://docs.qmk.fm/tap_hold)
-#define TAPPING_TERM 175
+#define TAPPING_TERM 240
+#define TAPPING_TERM_PER_KEY
 #define PERMISSIVE_HOLD
-#define CHORDAL_HOLD
 #define QUICK_TAP_TERM_PER_KEY
+#define FLOW_TAP_TERM 100
+#define CHORDAL_HOLD
 
 // One-shot keys (see https://docs.qmk.fm/one_shot_keys)
 #define ONESHOT_TIMEOUT 1000

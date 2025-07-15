@@ -65,8 +65,13 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t* record,
 
 #ifdef CHORDAL_HOLD
 bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
-    // Exceptionally allow some one-handed chords for hotkeys + mouse usage
+    // Exceptionally allow some one-handed chords for hotkeys, mouse usage and on thumb
     switch (tap_hold_keycode) {
+        case NUM_TAB:
+        case NAV_SPC:
+        case SYM_BSPC:
+        case SYM_ENT:
+            return true;
         case HR_T: // Left CTRL
             switch (other_keycode) {
                 case KC_A: // Select all
@@ -79,11 +84,6 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
                     return true;
             }
             break;
-    }
-
-    // Allow same-hand holds when the other key is in the rows below the alphas
-    if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 3) {
-        return true;
     }
 
     return get_chordal_hold_default(tap_hold_record, other_record);

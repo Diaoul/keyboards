@@ -7,6 +7,7 @@
 #define QUICK_TAP_TERM_PER_KEY
 #define FLOW_TAP_TERM 100
 #define CHORDAL_HOLD
+#define SPECULATIVE_HOLD
 
 // One-shot keys (see https://docs.qmk.fm/one_shot_keys)
 #define ONESHOT_TIMEOUT 1000

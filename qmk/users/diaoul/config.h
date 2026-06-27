@@ -8,6 +8,8 @@
 #define FLOW_TAP_TERM 100
 #define CHORDAL_HOLD
 #define SPECULATIVE_HOLD
+#define SPECULATIVE_HOLD_FLOW_TERM 100
+#define SPECULATIVE_HOLD_ONE_KEY
 
 // One-shot keys (see https://docs.qmk.fm/one_shot_keys)
 #define ONESHOT_TIMEOUT 1000

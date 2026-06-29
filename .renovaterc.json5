@@ -3,7 +3,16 @@
   extends: [
     "config:recommended",
     ":semanticCommits",
-    "docker:enableMajor",
+  ],
+  "git-submodules": {
+    enabled: true,
+  },
+  packageRules: [
+    {
+      matchManagers: ["git-submodules"],
+      matchPackageNames: ["https://github.com/qmk/qmk_firmware"],
+      versioning: "semver",
+    },
   ],
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
 }

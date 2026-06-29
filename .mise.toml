@@ -1,3 +1,6 @@
+[hooks]
+enter = "git config core.hooksPath .githooks"
+
 [tools]
 python = "3.14.6"
 
@@ -9,6 +12,15 @@ QMK_HOME = "{{config_root}}/qmk/qmk_firmware"
 description = "Install dependencies"
 alias = "i"
 run = "uv pip install -r requirements.txt"
+
+[tasks.update]
+description = "Sync submodules after Renovate version bumps (run after git pull)"
+alias = "u"
+run = """
+set -e
+git submodule update --init
+cd qmk/qmk_firmware && qmk git-submodule
+"""
 
 [tasks.draw]
 description = "Generate keymap drawings"

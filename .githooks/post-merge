@@ -1,0 +1,5 @@
+#!/bin/bash
+if git submodule status | grep -q '^[-+]'; then
+    echo "submodules out of sync — running: mise run update"
+    mise run update
+fi

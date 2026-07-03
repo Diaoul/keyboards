@@ -62,12 +62,12 @@ mise run install
 mise run update
 ```
 
-`mise run update` syncs QMK's internal submodules and must be re-run after pulling version bumps (the `post-merge` git hook does this automatically).
+`mise run update` syncs QMK's internal submodules. After the initial setup, the `post-merge` git hook runs it automatically on `git pull`.
 
 Then, flashing is done with:
 
 ```
-qmk flash -kb splitkb/aurora/corne -km diaoul
+qmk flash -kb splitkb/aurora/corne/rev1 -km diaoul
 ```
 
 To generate visualizations automatically with [keymap-drawer](https://github.com/caksoylar/keymap-drawer), run:
@@ -78,6 +78,6 @@ mise run draw
 
 ### Firmware size
 
-I try to be space efficient, especially on pro-micro microcontrollers as they are very limited in space with modern QMK. There are some option in the config that allows to disable some features in order to save space.
+I try to be space efficient, especially on pro-micro microcontrollers as they are very limited in space with modern QMK. There are some options in the config to disable features and save space.
 
 See [this page](https://docs.qmk.fm/squeezing_avr) for more about saving space.

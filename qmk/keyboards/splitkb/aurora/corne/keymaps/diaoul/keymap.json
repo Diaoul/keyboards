@@ -1,8 +1,7 @@
 {
   "converter": "liatris",
   "features": {
-    "encoder": false,
-    "rgb_matrix_custom_user": true
+    "encoder": false
   },
   "modules": ["getreuer/custom_shift_keys", "getreuer/select_word"]
 }

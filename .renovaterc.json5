@@ -10,7 +10,7 @@
   packageRules: [
     {
       matchManagers: ["git-submodules"],
-      matchPackageNames: ["https://github.com/qmk/qmk_firmware"],
+      matchDepNames: ["qmk/qmk_firmware"],
       versioning: "semver",
     },
   ],

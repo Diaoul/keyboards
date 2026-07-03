@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - keyboard: splitkb/kyria/rev1
+            keymap: diaoul
+          - keyboard: splitkb/aurora/corne/rev1
+            keymap: diaoul
+          - keyboard: bastardkb/skeletyl/v2/splinky_3
+            keymap: diaoul
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install toolchains
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-avr binutils-avr avr-libc gcc-arm-none-eabi
+
+      - name: Install QMK CLI
+        run: pip3 install qmk
+
+      - name: Set up QMK submodules
+        working-directory: qmk/qmk_firmware
+        env:
+          QMK_HOME: ${{ github.workspace }}/qmk/qmk_firmware
+        run: qmk git-submodule
+
+      - name: Compile ${{ matrix.keyboard }}:${{ matrix.keymap }}
+        env:
+          QMK_HOME: ${{ github.workspace }}/qmk/qmk_firmware
+          QMK_USERSPACE: ${{ github.workspace }}/qmk
+        run: qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }}

@@ -54,11 +54,15 @@ This is probably the most important layer of them all! I want to be able to reac
 
 This configuration repository leverages [external userspace](https://docs.qmk.fm/newbs_external_userspace) and makes use of some [community modules](https://docs.qmk.fm/features/community_modules). Follow related [QMK instructions](https://docs.qmk.fm/newbs) to get started.
 
-[mise](https://mise.jdx.dev/) is used to setup the environment, install everything with:
+[mise](https://mise.jdx.dev/) is used to manage the environment. After cloning:
 
 ```
+git submodule update --init
 mise run install
+mise run update
 ```
+
+`mise run update` syncs QMK's internal submodules and must be re-run after pulling version bumps (the `post-merge` git hook does this automatically).
 
 Then, flashing is done with:
 

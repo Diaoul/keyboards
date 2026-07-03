@@ -1,3 +1,8 @@
 {
-  "modules": ["getreuer/custom_shift_keys"]
+  "converter": "liatris",
+  "features": {
+    "encoder": false,
+    "rgb_matrix_custom_user": true
+  },
+  "modules": ["getreuer/custom_shift_keys", "getreuer/select_word"]
 }

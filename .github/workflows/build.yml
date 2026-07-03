@@ -19,7 +19,7 @@ jobs:
           - keyboard: bastardkb/skeletyl/v2/splinky_3
             keymap: diaoul
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: true
 

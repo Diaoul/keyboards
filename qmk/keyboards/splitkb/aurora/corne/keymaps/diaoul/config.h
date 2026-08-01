@@ -1,3 +1,6 @@
+// Copyright 2026 Antoine Bertin (@Diaoul)
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #pragma once
 
 // Pin remapping (damaged due to ESD)

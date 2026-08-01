@@ -1,3 +1,6 @@
+// Copyright 2026 Antoine Bertin (@Diaoul)
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 #pragma once
 
 // Encoder (see https://docs.qmk.fm/features/encoders)

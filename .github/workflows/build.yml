@@ -16,8 +16,13 @@ jobs:
             keymap: diaoul
           - keyboard: splitkb/aurora/corne/rev1
             keymap: diaoul
-          - keyboard: bastardkb/skeletyl/v2/splinky_3
+          # The old bastardkb/skeletyl/v2/* targets are aliased upstream to the
+          # AVR promicro board, so building them silently produced ATmega
+          # firmware. The Splinky is an RP2040 Community Edition controller, so
+          # build the promicro target through the rp2040_ce converter instead.
+          - keyboard: bastardkb/skeletyl/promicro
             keymap: diaoul
+            convert: rp2040_ce
     steps:
       - uses: actions/checkout@v7
         with:
@@ -37,8 +42,28 @@ jobs:
           QMK_HOME: ${{ github.workspace }}/qmk/qmk_firmware
         run: qmk git-submodule
 
+      - name: Lint ${{ matrix.keyboard }}:${{ matrix.keymap }}
+        env:
+          QMK_HOME: ${{ github.workspace }}/qmk/qmk_firmware
+          QMK_USERSPACE: ${{ github.workspace }}/qmk
+        run: |
+          out=$(qmk lint -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }} --strict 2>&1) || true
+          echo "$out"
+          # Upstream ships keyboards/splitkb/aurora/corne/glcdfont.c without a
+          # license header. That file lives in the qmk_firmware submodule, so we
+          # cannot fix it; ignore that one finding and fail on anything else.
+          bad=$(echo "$out" | grep '☒' \
+              | grep -v 'splitkb/aurora/corne/glcdfont.c' \
+              | grep -vc 'Lint check failed for:' || true)
+          if [ "$bad" -gt 0 ]; then
+            echo "::error::qmk lint reported $bad finding(s)"
+            exit 1
+          fi
+
       - name: Compile ${{ matrix.keyboard }}:${{ matrix.keymap }}
         env:
           QMK_HOME: ${{ github.workspace }}/qmk/qmk_firmware
           QMK_USERSPACE: ${{ github.workspace }}/qmk
-        run: qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }}
+        run: >-
+          qmk compile -kb ${{ matrix.keyboard }} -km ${{ matrix.keymap }}
+          ${{ matrix.convert && format('-e CONVERT_TO={0}', matrix.convert) || '' }}

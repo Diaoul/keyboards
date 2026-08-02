@@ -1,3 +1,4 @@
 {
+  "converter": "rp2040_ce",
   "modules": ["getreuer/custom_shift_keys"]
 }

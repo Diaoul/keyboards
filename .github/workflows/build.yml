@@ -52,6 +52,12 @@ jobs:
           # Upstream ships keyboards/splitkb/aurora/corne/glcdfont.c without a
           # license header. That file lives in the qmk_firmware submodule, so we
           # cannot fix it; ignore that one finding and fail on anything else.
+          #
+          # TODO: remove this filter once qmk/qmk_firmware#26382 is merged and
+          # the submodule has been bumped past it. The grep below then matches
+          # nothing, so lint stays correct either way — it is dead weight, not a
+          # silent hole. Check with:
+          #   gh pr view 26382 --repo qmk/qmk_firmware --json state,mergedAt
           bad=$(echo "$out" | grep '☒' \
               | grep -v 'splitkb/aurora/corne/glcdfont.c' \
               | grep -vc 'Lint check failed for:' || true)

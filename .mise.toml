@@ -2,7 +2,7 @@
 enter = "git config core.hooksPath .githooks"
 
 [tools]
-python = "3.14.6"
+python = "3.14.7"
 
 [env]
 _.python.venv = { path = ".venv", create = true }

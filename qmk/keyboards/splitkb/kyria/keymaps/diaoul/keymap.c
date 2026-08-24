@@ -61,7 +61,8 @@ bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_write_P(PSTR("username:      diaoul"), false);
         render_qmk_version();
-        oled_write_P(PSTR("revision:         1.4"), false);
+        oled_write_P(PSTR("wpm:              "), false);
+        oled_write(get_u8_str(get_current_wpm(), ' '), false);
         render_mod_status_alt_gui(get_mods() | get_oneshot_mods(), 0, 5);
         render_mod_status_shift_ctrl(get_mods() | get_oneshot_mods(), is_caps_word_on(), 5, 5);
         render_layer_state(14, 4);

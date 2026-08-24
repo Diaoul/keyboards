@@ -13,6 +13,7 @@ EXTRAFLAGS += -flto=auto
 
 # Extra features
 REPEAT_KEY_ENABLE ?= yes
+WPM_ENABLE ?= yes
 CAPS_WORD_ENABLE ?= yes
 KEY_OVERRIDE_ENABLE ?= no
 COMBO_ENABLE ?= yes

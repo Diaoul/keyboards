@@ -57,35 +57,11 @@ static void render_qmk_version(void) {
     oled_write_P(version, false);
 }
 
-static void render_host_os(void) {
-#ifdef OS_DETECTION_ENABLE
-    switch (detected_host_os()) {
-        case OS_MACOS:
-            oled_write_P(PSTR("os:             macOS"), false);
-            break;
-        case OS_IOS:
-            oled_write_P(PSTR("os:               iOS"), false);
-            break;
-        case OS_WINDOWS:
-            oled_write_P(PSTR("os:           Windows"), false);
-            break;
-        case OS_LINUX:
-            oled_write_P(PSTR("os:             Linux"), false);
-            break;
-        default:
-            oled_write_P(PSTR("os:            unsure"), false);
-            break;
-    }
-#else
-    oled_write_P(PSTR("os:               n/a"), false);
-#endif
-}
-
 bool oled_task_user(void) {
     if (is_keyboard_master()) {
         oled_write_P(PSTR("username:      diaoul"), false);
         render_qmk_version();
-        render_host_os();
+        oled_write_P(PSTR("revision:         1.4"), false);
         render_mod_status_alt_gui(get_mods() | get_oneshot_mods(), 0, 5);
         render_mod_status_shift_ctrl(get_mods() | get_oneshot_mods(), is_caps_word_on(), 5, 5);
         render_layer_state(14, 4);

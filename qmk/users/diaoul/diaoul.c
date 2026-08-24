@@ -90,22 +90,6 @@ bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, u
 }
 #endif // CHORDAL_HOLD
 
-// OS detection (https://docs.qmk.fm/features/os_detection)
-#ifdef OS_DETECTION_ENABLE
-bool process_detected_host_os_user(os_variant_t detected_os) {
-    if (detected_os == OS_UNSURE) {
-        return true;
-    }
-
-    const bool is_mac = (detected_os == OS_MACOS || detected_os == OS_IOS);
-
-    keymap_config.swap_lctl_lgui = is_mac;
-    keymap_config.swap_rctl_rgui = is_mac;
-
-    return true;
-}
-#endif // OS_DETECTION_ENABLE
-
 
 // Custom shift keys (https://getreuer.info/posts/keyboards/custom-shift-keys)
 #ifdef COMMUNITY_MODULE_CUSTOM_SHIFT_KEYS_ENABLE

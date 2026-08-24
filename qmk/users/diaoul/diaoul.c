@@ -21,16 +21,24 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t* record) {
 
 #ifdef QUICK_TAP_TERM_PER_KEY
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
-    // Enable key repeating for some keys
+    // Force hold on mod-taps and layer-taps, Flow Tap handles fast typing
+    // (https://getreuer.info/posts/keyboards/faqs/#repeat-a-mod-tap-key)
     switch (keycode) {
-        // Only for home row mods ALT and GUI
-        case HR_A:
-        case HR_R:
-        case HR_E:
-        case HR_I:
-            return QUICK_TAP_TERM;
+        case QK_MOD_TAP ... QK_MOD_TAP_MAX:
+        case QK_LAYER_TAP ... QK_LAYER_TAP_MAX:
+            switch (keycode) {
+                // Enable key repeating for home row mods ALT and GUI
+                case HR_A:
+                case HR_R:
+                case HR_E:
+                case HR_I:
+                    return QUICK_TAP_TERM;
+                default:
+                    return 0;
+            }
         default:
-            return 0;
+            // TT and one-shot tap toggle need quick tap to toggle
+            return QUICK_TAP_TERM;
     }
 }
 #endif // QUICK_TAP_TERM_PER_KEY

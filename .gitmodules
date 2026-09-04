@@ -1,7 +1,7 @@
 [submodule "qmk/qmk_firmware"]
 	path = qmk/qmk_firmware
 	url = https://github.com/qmk/qmk_firmware
-	branch = 0.34.1
+	branch = 0.34.2
 [submodule "qmk/modules/getreuer"]
 	path = qmk/modules/getreuer
 	url = https://github.com/getreuer/qmk-modules.git

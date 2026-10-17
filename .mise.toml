@@ -2,16 +2,10 @@
 enter = "git config core.hooksPath .githooks"
 
 [tools]
-python = "3.15.0"
+"pypi:keymap-drawer" = "0.23.0"
 
 [env]
-_.python.venv = { path = ".venv", create = true }
 QMK_HOME = "{{config_root}}/qmk/qmk_firmware"
-
-[tasks.install]
-description = "Install dependencies"
-alias = "i"
-run = "uv pip install -r requirements.txt"
 
 [tasks.update]
 description = "Sync submodules after Renovate version bumps (run after git pull)"

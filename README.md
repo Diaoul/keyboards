@@ -58,7 +58,6 @@ This configuration repository leverages [external userspace](https://docs.qmk.fm
 
 ```
 git submodule update --init
-mise run install
 mise run update
 ```
 

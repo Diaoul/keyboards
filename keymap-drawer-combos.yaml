@@ -1,0 +1,11 @@
+# Combos from qmk/users/diaoul/diaoul.c; keymap-drawer cannot parse them from QMK.
+# Trigger keys match tap legends on the drawn layer.
+combos:
+  - { tk: [W, F], k: "[", l: [Base] }
+  - { tk: [F, P], k: "(", l: [Base] }
+  - { tk: [W, P], k: "{", l: [Base], a: top }
+  - { tk: [U, Y], k: "]", l: [Base] }
+  - { tk: [L, U], k: ")", l: [Base] }
+  - { tk: [L, Y], k: "}", l: [Base], a: top }
+  - { tk: ["$$mdi:keyboard-space$$", "$$mdi:backspace-outline$$"], k: Caps Word, l: [Base] }
+  - { tk: [F, N], k: Fun, l: [Base], draw_separate: true }

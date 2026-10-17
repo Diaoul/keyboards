@@ -17,6 +17,7 @@ Corne is the daily driver; it has 3 thumbs per side and no encoder. Kyria has 5 
 - `qmk/users/diaoul/` — shared userspace (tap-hold, combos, custom shift, OLED). Behaviour belongs here.
 - `qmk/keyboards/<vendor>/<board>/keymaps/diaoul/` — matrix and board-specific hardware only (OLED art, encoders)
 - `qmk/modules/getreuer` — getreuer's modules (submodule)
+- `keymap-drawer-combos.yaml` — combos for the README drawing (`mise run draw`); keymap-drawer can't parse them from QMK, so mirror any combo change in `diaoul.c` here
 - `qmk/qmk_firmware/` — QMK firmware (submodule, pinned to a release tag; the tag lives in `.gitmodules` as `branch =` so Renovate bumps it)
 
 ## Build

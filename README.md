@@ -42,6 +42,8 @@ This is the rule of cool! I've customized it to have a bit of information on the
 
 I want to love them but the reality is that with a decent layout they easily conflict with rolls for the ones with adjacent keys. Even having played with timings I have a lot of misfires. As for the one that are not on adjacent keys, I find them a bit clunky to type.
 
+The exception is thumb combos: pressing both inner thumbs (space and backspace) toggles Caps Word. It's easy to reach and never happens while typing. Combos on home row mods are a no-go, even across hands: rolls like "these" or "used" fire them constantly.
+
 ### Navigation Layer
 
 I move around with arrow keys on a layer. In combination with home, end and home row mods it gives you a lot of freedom to skip words or go back to the beginning of a line. I've replaced my vim `HJKL` navigation with this, it's not as comfortable but it's an OK compromise to be able to reuse this muscle memory everywhere else.

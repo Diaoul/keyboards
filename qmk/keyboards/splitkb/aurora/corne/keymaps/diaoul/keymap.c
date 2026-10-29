@@ -221,7 +221,7 @@ static void render_sky(void) {
 
 bool oled_task_user(void) {
     // Animations dirty the buffer every frame, and the driver's OLED_TIMEOUT restarts on every dirty render
-    if (last_input_activity_elapsed() > OLED_TIMEOUT) {
+    if (input_idle_time() > OLED_TIMEOUT) {
         oled_off();
         return false;
     }

@@ -211,6 +211,24 @@ static bool art_solid(int16_t x, int16_t y) {
     return true;
 }
 
+// Solid aurora pixels, found once per sky: a slow frame on the half without USB delays its clock sync,
+// and key presses from the other half then read as long idle, blinking its OLED and RGB off
+static uint8_t aurora_solid[SKY_MASK_SIZE];
+static bool    aurora_detected;
+
+static void detect_aurora(void) {
+    aurora_detected = true;
+    memset(aurora_solid, 0, sizeof(aurora_solid));
+    for (int16_t y = current->aurora_top; y < current->aurora_bottom; y++) {
+        for (int16_t x = 0; x < current->width; x++) {
+            const uint16_t i = art_index(x, y);
+            if (i < SKY_MASK_SIZE && art_solid(x, y)) {
+                aurora_solid[i] |= 1 << (y % 8);
+            }
+        }
+    }
+}
+
 // A 1-bit panel has no grey, so solid aurora is dithered to read as light
 static void draw_aurora(void) {
     static const uint8_t bayer[4][4] = {{0, 8, 2, 10}, {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
@@ -220,19 +238,29 @@ static void draw_aurora(void) {
     if (current->aurora_top >= current->aurora_bottom) {
         return;
     }
+    if (!aurora_detected) {
+        detect_aurora();
+    }
     if (timer_elapsed32(timer) >= SKY_AURORA_FRAME_INTERVAL) {
         timer = timer_read32();
         phase += SKY_AURORA_PHASE_STEP;
     }
-    for (int16_t y = current->aurora_top; y < current->aurora_bottom; y++) {
-        for (int16_t x = 0; x < current->width; x++) {
-            if (!art_solid(x, y)) {
+    const uint16_t end = MIN(current->size, SKY_MASK_SIZE);
+    for (uint16_t i = current->aurora_top / 8 * current->width; i < end; i++) {
+        if (!aurora_solid[i]) {
+            continue;
+        }
+        const uint8_t x = i % current->width;
+        for (uint8_t bit = 0; bit < 8; bit++) {
+            if (!(aurora_solid[i] >> bit & 1)) {
                 continue;
             }
+            const uint8_t y = i / current->width * 8 + bit;
             // faint brighter bands travel down the rays, out of 16 levels
             const uint8_t level = SKY_AURORA_LEVEL - SKY_AURORA_SHIMMER + scale8(sin8(y * 6 - x * 3 - phase), 2 * SKY_AURORA_SHIMMER + 1);
+            // the art is lit here and the aurora draws first, so flipping turns the pixel off
             if (bayer[y % 4][x % 4] >= level) {
-                write_pixel(x, y, false);
+                flip[i] |= 1 << bit;
             }
         }
     }
@@ -242,8 +270,9 @@ void sky_render(const sky_t *sky) {
     if (sky != current) {
         current        = sky;
         rows           = sky->size / sky->width * 8;
-        shift          = 0;
-        stars_detected = false;
+        shift           = 0;
+        stars_detected  = false;
+        aurora_detected = false;
     }
     // human-timed mod changes keep the effects from replaying the same sequence every boot
     static uint8_t last_mods = 0;

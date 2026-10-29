@@ -12,7 +12,7 @@ RGB_MATRIX_EFFECT(HUE_BREATHING_DUAL)
 #        endif
 
 hsv_t HUE_BREATHING_DUAL_math(hsv_t hsv, uint8_t i, uint8_t time) {
-    if (is_keyboard_master()) {
+    if (is_keyboard_left()) {
         hsv.h = hsv.h + RGB_MATRIX_HUE_BREATHING_DUAL_DIRECTION * scale8(abs8(sin8(time / 2) - 128) * 2, RGB_MATRIX_HUE_BREATHING_DUAL_DELTA);
     } else {
         hsv.h = hsv.h + RGB_MATRIX_HUE_BREATHING_DUAL_SLAVE_HUE_DISTANCE - RGB_MATRIX_HUE_BREATHING_DUAL_DIRECTION * scale8(abs8(sin8(time / 2) - 128) * 2, RGB_MATRIX_HUE_BREATHING_DUAL_DELTA);

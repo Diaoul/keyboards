@@ -36,7 +36,7 @@
 
 // RGB Matrix (https://docs.qmk.fm/features/rgb_matrix#additional-config-h-options)
 #define RGB_MATRIX_SLEEP
-#define RGB_MATRIX_TIMEOUT 300000
+#define RGB_IDLE_TIMEOUT 300000 // in ms, instead of RGB_MATRIX_TIMEOUT (see diaoul.c)
 
 // OLED (https://docs.qmk.fm/features/oled_driver)
 #ifdef OLED_ENABLE

@@ -174,7 +174,7 @@ void keyboard_post_init_user(void) {
     transaction_register_rpc(USER_SYNC_CAPS_WORD, caps_word_sync_slave_handler);
 }
 
-void housekeeping_task_user(void) {
+static void caps_word_sync_task(void) {
     if (!is_keyboard_master()) {
         return;
     }
@@ -190,3 +190,37 @@ void housekeeping_task_user(void) {
     }
 }
 #endif // CAPS_WORD_ENABLE && CAPS_WORD_SPLIT_SYNC
+
+// The other half can stamp a key press slightly ahead of this half's synced clock, and QMK's unsigned elapsed
+// time then wraps to nearly UINT32_MAX; read that as just now (https://github.com/qmk/qmk_firmware/issues/26544)
+uint32_t input_idle_time(void) {
+    const uint32_t idle = last_input_activity_elapsed();
+    return idle > UINT32_MAX - 1000 ? 0 : idle;
+}
+
+// RGB_MATRIX_TIMEOUT judges idleness on each half with that wrapping elapsed time, so the master decides
+// instead and QMK syncs its suspend state to the other half
+#if defined(RGB_MATRIX_ENABLE) && defined(RGB_IDLE_TIMEOUT)
+static void rgb_idle_task(void) {
+    static bool was_idle = false;
+    if (!is_keyboard_master()) {
+        return;
+    }
+    const bool idle = input_idle_time() > RGB_IDLE_TIMEOUT;
+    if (idle && !rgb_matrix_get_suspend_state()) {
+        rgb_matrix_set_suspend_state(true);
+    } else if (!idle && was_idle) {
+        rgb_matrix_set_suspend_state(false);
+    }
+    was_idle = idle;
+}
+#endif // RGB_MATRIX_ENABLE && RGB_IDLE_TIMEOUT
+
+void housekeeping_task_user(void) {
+#if defined(CAPS_WORD_ENABLE) && defined(CAPS_WORD_SPLIT_SYNC)
+    caps_word_sync_task();
+#endif
+#if defined(RGB_MATRIX_ENABLE) && defined(RGB_IDLE_TIMEOUT)
+    rgb_idle_task();
+#endif
+}

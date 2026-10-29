@@ -211,8 +211,7 @@ static bool art_solid(int16_t x, int16_t y) {
     return true;
 }
 
-// Solid aurora pixels, found once per sky: a slow frame on the half without USB delays its clock sync,
-// and key presses from the other half then read as long idle, blinking its OLED and RGB off
+// Solid aurora pixels, found once per sky as checking eight neighbours per pixel every frame is slow
 static uint8_t aurora_solid[SKY_MASK_SIZE];
 static bool    aurora_detected;
 
@@ -268,8 +267,8 @@ static void draw_aurora(void) {
 
 void sky_render(const sky_t *sky) {
     if (sky != current) {
-        current        = sky;
-        rows           = sky->size / sky->width * 8;
+        current         = sky;
+        rows            = sky->size / sky->width * 8;
         shift           = 0;
         stars_detected  = false;
         aurora_detected = false;

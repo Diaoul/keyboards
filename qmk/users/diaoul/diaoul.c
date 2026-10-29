@@ -199,7 +199,7 @@ uint32_t input_idle_time(void) {
 }
 
 // RGB_MATRIX_TIMEOUT judges idleness on each half with that wrapping elapsed time, so the master decides
-// instead and QMK syncs its suspend state to the other half
+// instead and QMK syncs its suspend state to the other half (https://github.com/qmk/qmk_firmware/issues/26544)
 #if defined(RGB_MATRIX_ENABLE) && defined(RGB_IDLE_TIMEOUT)
 static void rgb_idle_task(void) {
     static bool was_idle = false;

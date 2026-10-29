@@ -8,12 +8,9 @@
 #include "progmem.h"
 
 void render_user(uint8_t col, uint8_t line) {
-    static const char PROGMEM user_1[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
-    static const char PROGMEM user_2[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0};
+    static const char PROGMEM user[] = {0x80, 0x81, 0x82, 0x83, 0x84, 0};
     oled_set_cursor(col, line);
-    oled_write_P(user_1, false);
-    oled_set_cursor(col, line + 1);
-    oled_write_P(user_2, false);
+    oled_write_P(user, false);
 }
 
 void render_computer(uint8_t col, uint8_t line) {

@@ -154,3 +154,38 @@ combo_t key_combos[] = {
 };
 #endif // COMBO_ENABLE
 
+
+// Caps Word lives on the master only; QMK has no built-in split sync for it
+#if defined(CAPS_WORD_ENABLE) && defined(CAPS_WORD_SPLIT_SYNC)
+#    include "transactions.h"
+
+static bool caps_word_on_slave = false;
+
+static void caps_word_sync_slave_handler(uint8_t in_len, const void* in_data, uint8_t out_len, void* out_data) {
+    caps_word_on_slave = *(const bool*)in_data;
+}
+
+bool is_caps_word_on_split(void) {
+    return is_keyboard_master() ? is_caps_word_on() : caps_word_on_slave;
+}
+
+void keyboard_post_init_user(void) {
+    transaction_register_rpc(USER_SYNC_CAPS_WORD, caps_word_sync_slave_handler);
+}
+
+void housekeeping_task_user(void) {
+    if (!is_keyboard_master()) {
+        return;
+    }
+    static bool     last_sent = false;
+    static uint32_t last_sync = 0;
+    const bool      on        = is_caps_word_on();
+    // resend periodically so a slave that rebooted catches up
+    if (on != last_sent || timer_elapsed32(last_sync) > 500) {
+        if (transaction_rpc_send(USER_SYNC_CAPS_WORD, sizeof(on), &on)) {
+            last_sent = on;
+            last_sync = timer_read32();
+        }
+    }
+}
+#endif // CAPS_WORD_ENABLE && CAPS_WORD_SPLIT_SYNC

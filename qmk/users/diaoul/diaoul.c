@@ -154,7 +154,6 @@ combo_t key_combos[] = {
 };
 #endif // COMBO_ENABLE
 
-
 // Caps Word lives on the master only; QMK has no built-in split sync for it
 #if defined(CAPS_WORD_ENABLE) && defined(CAPS_WORD_SPLIT_SYNC)
 #    include "transactions.h"
@@ -162,7 +161,9 @@ combo_t key_combos[] = {
 static bool caps_word_on_slave = false;
 
 static void caps_word_sync_slave_handler(uint8_t in_len, const void* in_data, uint8_t out_len, void* out_data) {
-    caps_word_on_slave = *(const bool*)in_data;
+    if (in_len == sizeof(bool)) {
+        caps_word_on_slave = *(const bool*)in_data;
+    }
 }
 
 bool is_caps_word_on_split(void) {

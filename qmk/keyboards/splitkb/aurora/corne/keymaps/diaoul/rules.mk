@@ -1,1 +1,2 @@
 RGB_MATRIX_CUSTOM_USER = yes
+SKY_ENABLE = yes

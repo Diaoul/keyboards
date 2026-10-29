@@ -31,13 +31,18 @@
 #define EXTRA_SHORT_COMBOS
 
 // RGB (https://docs.qmk.fm/features/rgblight#configuration)
-#define RBGLIGHT_HUE_STEP 4
+#define RGBLIGHT_HUE_STEP 4
 #define RGBLIGHT_SLEEP
 
-// Custom OLED font
+// RGB Matrix (https://docs.qmk.fm/features/rgb_matrix#additional-config-h-options)
+#define RGB_MATRIX_SLEEP
+#define RGB_MATRIX_TIMEOUT 300000
+
+// OLED (https://docs.qmk.fm/features/oled_driver)
 #ifdef OLED_ENABLE
 #    ifdef OLED_FONT_H
 #        undef OLED_FONT_H
 #    endif
 #    define OLED_FONT_H "users/diaoul/glcdfont.c"
+#    define OLED_BRIGHTNESS 100
 #endif

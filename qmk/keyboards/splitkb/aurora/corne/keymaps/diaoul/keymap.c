@@ -68,7 +68,8 @@ static void render_logo(void) {
         0xb1, 0xf1, 0xf1, 0xf2, 0xe6, 0xa4, 0xa4, 0x04, 0x04, 0x28, 0x28, 0x28, 0x28, 0x28, 0x28, 0x28
     };
     // clang-format on
-    static const sky_t sky = {.art = aurora_logo, .size = sizeof(aurora_logo), .width = OLED_LINE_WIDTH, .star_rows = 24};
+    static const sky_star_t stars[] = {{17, 1, SKY_DOT}, {15, 7, SKY_DOT_X}, {30, 9, SKY_DOT}, {29, 22, SKY_DOT_X}};
+    static const sky_t      sky     = {.art = aurora_logo, .size = sizeof(aurora_logo), .width = OLED_LINE_WIDTH, .stars = stars, .star_count = ARRAY_SIZE(stars)};
     sky_render(&sky);
 }
 
@@ -155,9 +156,14 @@ static void render_sky(void) {
         0x10, 0x10, 0xa8, 0xf4, 0x18, 0x11, 0x1c, 0x78, 0xfb, 0x0e, 0x10, 0x18, 0xa4, 0xf8, 0x10, 0x20,
         0x18, 0x09, 0x1f, 0x6c, 0xea, 0x1f, 0x28, 0x60, 0x30, 0x38, 0xe0, 0xc0, 0x42, 0x33, 0x21, 0x00
     };
+    static const sky_star_t stars[] = {
+        {22, 1, SKY_DOT}, {12, 3, SKY_PLUS}, {3, 4, SKY_DOT_X}, {28, 4, SKY_DOT}, {13, 9, SKY_DOT_X},
+        {24, 10, SKY_DOT}, {4, 13, SKY_DOT_X}, {16, 14, SKY_PLUS}, {30, 15, SKY_PLUS}, {23, 22, SKY_DOT_X},
+        {0, 23, SKY_DOT}, {20, 28, SKY_DOT_X},
+    };
     // clang-format on
-    // stars and the shooting star keep above the aurora's rays, which shimmer down to the tree tops
-    static const sky_t sky = {.art = aurora_art, .size = sizeof(aurora_art), .width = OLED_LINE_WIDTH, .star_rows = 24, .meteor_rows = 24, .aurora_top = 16, .aurora_bottom = 88};
+    // the shooting star keeps above the aurora's rays, which shimmer down to the tree tops
+    static const sky_t sky = {.art = aurora_art, .size = sizeof(aurora_art), .width = OLED_LINE_WIDTH, .stars = stars, .star_count = ARRAY_SIZE(stars), .meteor_rows = 24, .aurora_top = 16, .aurora_bottom = 88};
     sky_render(&sky);
 }
 

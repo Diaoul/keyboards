@@ -40,10 +40,10 @@
 #define RGB_IDLE_TIMEOUT 300000 // in ms
 
 // OLED (https://docs.qmk.fm/features/oled_driver)
+#define OLED_BRIGHTNESS 100
 #ifdef OLED_ENABLE
 #    ifdef OLED_FONT_H
 #        undef OLED_FONT_H
 #    endif
 #    define OLED_FONT_H "users/diaoul/glcdfont.c"
-#    define OLED_BRIGHTNESS 100
 #endif

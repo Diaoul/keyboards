@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "diaoul.c"
-#include "version.h"
 #include <lib/lib8tion/lib8tion.h>
 
 // clang-format off
@@ -112,63 +111,6 @@ static void render_exhaust(uint8_t line) {
     }
 }
 
-// "v" QMK_VERSION in 3x5 glyphs on the username's baseline, too wide for 5 font cells; returns columns used
-static uint8_t build_qmk_version(uint8_t columns[OLED_LINE_WIDTH]) {
-    // one byte per column, LSB at the top
-    static const uint8_t PROGMEM digits[10][3] = {
-        {0x1F, 0x11, 0x1F}, {0x12, 0x1F, 0x10}, {0x1D, 0x15, 0x17}, {0x15, 0x15, 0x1F}, {0x07, 0x04, 0x1F},
-        {0x17, 0x15, 0x1D}, {0x1F, 0x15, 0x1D}, {0x01, 0x01, 0x1F}, {0x1F, 0x15, 0x1F}, {0x17, 0x15, 0x1F},
-    };
-    static const char PROGMEM version[] = "v" QMK_VERSION;
-
-    uint8_t width = 0;
-    for (uint8_t i = 0; i < sizeof(version) - 1; i++) {
-        const char c = pgm_read_byte(&version[i]);
-        if (c >= '0' && c <= '9' && width + 3 <= OLED_LINE_WIDTH) {
-            for (uint8_t j = 0; j < 3; j++) {
-                columns[width++] = pgm_read_byte(&digits[c - '0'][j]) << 2;
-            }
-        } else if (c == 'v' && width + 3 <= OLED_LINE_WIDTH) {
-            columns[width++] = 0x0C << 2;
-            columns[width++] = 0x10 << 2;
-            columns[width++] = 0x0C << 2;
-        } else if (c == '.' && width < OLED_LINE_WIDTH) {
-            columns[width++] = 0x10 << 2;
-        } else {
-            continue;
-        }
-        if (width < OLED_LINE_WIDTH) {
-            columns[width++] = 0;
-        }
-    }
-    return width;
-}
-
-static void render_qmk_version(uint8_t line) {
-    uint8_t       columns[OLED_LINE_WIDTH] = {0};
-    const uint8_t width                    = build_qmk_version(columns);
-    const uint8_t offset                   = (OLED_LINE_WIDTH - width + 1) / 2; // width includes a trailing gap
-    for (uint8_t x = 0; x < OLED_LINE_WIDTH; x++) {
-        oled_write_raw_byte(x >= offset && x - offset < width ? columns[x - offset] : 0, line * OLED_LINE_WIDTH + x);
-    }
-}
-
-// Shown only while every modifier is held, so it stays out of the way and off the burn-in budget
-static bool qmk_version_requested(void) {
-    static bool     holding = false;
-    static uint32_t since   = 0;
-    const uint8_t   mods    = get_mods();
-    if (!((mods & MOD_MASK_CTRL) && (mods & MOD_MASK_SHIFT) && (mods & MOD_MASK_ALT) && (mods & MOD_MASK_GUI))) {
-        holding = false;
-        return false;
-    }
-    if (!holding) {
-        holding = true;
-        since   = timer_read32();
-    }
-    return timer_elapsed32(since) > QMK_VERSION_HOLD_TIME;
-}
-
 static void render_kb_LED_state(uint8_t col, uint8_t line) {
     led_t led_usb_state = host_keyboard_led_state();
     oled_set_cursor(col, line);
@@ -231,13 +173,6 @@ bool oled_task_user(void) {
         render_exhaust(6);
         render_kb_LED_state(0, 7);
         render_layer_state(0, 8);
-        if (qmk_version_requested()) {
-            render_qmk_version(11);
-        } else {
-            for (uint8_t x = 0; x < OLED_LINE_WIDTH; x++) {
-                oled_write_raw_byte(0, 11 * OLED_LINE_WIDTH + x);
-            }
-        }
         render_mod_status_alt_gui(get_mods() | get_oneshot_mods(), 0, 12);
         render_mod_status_shift_ctrl(get_mods() | get_oneshot_mods(), is_caps_word_on_split(), 0, 14);
     } else {

@@ -13,19 +13,6 @@ void render_user(uint8_t col, uint8_t line) {
     oled_write_P(user, false);
 }
 
-void render_computer(uint8_t col, uint8_t line) {
-    static const char PROGMEM computer_1[] = {0x98, 0x99, 0x9a, 0};
-    static const char PROGMEM computer_2[] = {0xb8, 0xb9, 0xba, 0};
-    static const char PROGMEM computer_3[] = {0xd8, 0xd9, 0xda, 0};
-
-    oled_set_cursor(col, line);
-    oled_write_P(computer_1, false);
-    oled_set_cursor(col, line + 1);
-    oled_write_P(computer_2, false);
-    oled_set_cursor(col, line + 2);
-    oled_write_P(computer_3, false);
-}
-
 void render_layer_state(uint8_t col, uint8_t line) {
     static const char PROGMEM layer_1[]   = {0x93, 0x94, 0x95, 0x96, 0x97, 0};
     static const char PROGMEM layer_2_1[] = {0xb3, 0};

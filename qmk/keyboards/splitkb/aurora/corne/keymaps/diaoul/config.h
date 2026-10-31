@@ -18,7 +18,6 @@
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_CUSTOM_HUE_BREATHING_DUAL
 
 // OLED (https://docs.qmk.fm/features/oled_driver)
-#define QMK_VERSION_HOLD_TIME 1000 // in ms
 #define EXHAUST_PARTICLES 40
 #define EXHAUST_FRAME_INTERVAL 50 // in ms
 

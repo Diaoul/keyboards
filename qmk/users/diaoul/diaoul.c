@@ -178,15 +178,10 @@ static void caps_word_sync_task(void) {
     if (!is_keyboard_master()) {
         return;
     }
-    static bool     last_sent = false;
-    static uint32_t last_sync = 0;
-    const bool      on        = is_caps_word_on();
-    // resend periodically so a slave that rebooted catches up
-    if (on != last_sent || timer_elapsed32(last_sync) > 500) {
-        if (transaction_rpc_send(USER_SYNC_CAPS_WORD, sizeof(on), &on)) {
-            last_sent = on;
-            last_sync = timer_read32();
-        }
+    static bool last_sent = false;
+    const bool  on        = is_caps_word_on();
+    if (on != last_sent && transaction_rpc_send(USER_SYNC_CAPS_WORD, sizeof(on), &on)) {
+        last_sent = on;
     }
 }
 #endif // CAPS_WORD_ENABLE && CAPS_WORD_SPLIT_SYNC

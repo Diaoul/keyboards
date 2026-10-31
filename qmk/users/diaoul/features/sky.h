@@ -18,19 +18,19 @@
 #    define SKY_MAX_STARS 16
 #endif
 #ifndef SKY_STAR_PULSE
-#    define SKY_STAR_PULSE 1000 // one rise and fade at the slowest speed, in ms
-#endif
-#ifndef SKY_STAR_MAX_SPEED
-#    define SKY_STAR_MAX_SPEED 20 // fastest star's speed, in 1/8 of the slowest
+#    define SKY_STAR_PULSE 400 // one rise and fade, in ms
 #endif
 #ifndef SKY_STAR_DENSITY
-#    define SKY_STAR_DENSITY 26 // share of pulse slots in which a star twinkles, out of 256
+#    define SKY_STAR_DENSITY 22 // share of pulse slots in which a star twinkles, out of 256
 #endif
 #ifndef SKY_STAR_DIP_CHANCE
 #    define SKY_STAR_DIP_CHANCE 10 // share of the other slots in which a star dips, out of 256
 #endif
 #ifndef SKY_STAR_DIP_TIME
 #    define SKY_STAR_DIP_TIME 150 // in ms
+#endif
+#ifndef SKY_STAR_MAX_ACTIVE
+#    define SKY_STAR_MAX_ACTIVE 2 // stars animating at once
 #endif
 
 // Shooting star
@@ -41,10 +41,10 @@
 #    define SKY_METEOR_TAIL 5 // in pixels
 #endif
 #ifndef SKY_METEOR_MIN_WAIT
-#    define SKY_METEOR_MIN_WAIT 15000 // in ms
+#    define SKY_METEOR_MIN_WAIT 10000 // in ms
 #endif
 #ifndef SKY_METEOR_MAX_WAIT
-#    define SKY_METEOR_MAX_WAIT 60000 // in ms
+#    define SKY_METEOR_MAX_WAIT 40000 // in ms, at most 65535
 #endif
 
 // Aurora
@@ -61,15 +61,28 @@
 #    define SKY_AURORA_SHIMMER 2 // levels the ripple adds or removes
 #endif
 
-// Art animated as a night sky: its lone pixels and pluses twinkle, a shooting star crosses it and its solid areas shimmer
+enum {
+    SKY_DOT, // a pixel in the art, growing into a small plus
+    SKY_DOT_X, // a pixel in the art, growing into a small x
+    SKY_PLUS, // a plus in the art, growing out to detached tips
+};
+
 typedef struct {
-    const char *art; // PROGMEM, in OLED buffer order
-    uint16_t    size; // in bytes, at most SKY_MASK_SIZE
-    uint8_t     width; // pixels per OLED line
-    uint8_t     star_rows; // lone pixels and pluses above this row are stars
-    uint8_t     meteor_rows; // a shooting star crosses the rows above this, 0 for none
-    uint8_t     aurora_top; // solid areas from this row to aurora_bottom shimmer, equal for none
-    uint8_t     aurora_bottom;
+    uint8_t x; // in art coordinates, so the star drifts with the art
+    uint8_t y;
+    uint8_t shape;
+} sky_star_t;
+
+// Art animated as a night sky: its stars twinkle, a shooting star crosses it and its solid areas shimmer
+typedef struct {
+    const char       *art; // PROGMEM, in OLED buffer order
+    uint16_t          size; // in bytes, at most SKY_MASK_SIZE
+    uint8_t           width; // pixels per OLED line
+    const sky_star_t *stars; // at most SKY_MAX_STARS
+    uint8_t           star_count;
+    uint8_t           meteor_rows; // a shooting star crosses the rows above this, 0 for none
+    uint8_t           aurora_top; // solid areas from this row to aurora_bottom shimmer, equal for none
+    uint8_t           aurora_bottom;
 } sky_t;
 
 // Renders the sky from the top of the OLED; one sky per display, as they share state

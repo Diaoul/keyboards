@@ -42,62 +42,36 @@ static void update_drift(void) {
     }
 }
 
-typedef struct {
-    uint8_t  x;
-    uint8_t  y;
-    bool     plus; // drawn as a plus in the art rather than a dot
-    bool     cross; // a dot that grows diagonally, so dots differ from one another
-    uint8_t  speed; // in 1/8, so pulses vary in length
-    uint16_t offset;
-} star_t;
+static struct {
+    uint32_t turn; // the slot last decided on, which holds for the whole slot
+    bool     turn_taken; // false when the cap was reached as the turn came
+} turns[SKY_MAX_STARS];
 
-static star_t  stars[SKY_MAX_STARS];
-static uint8_t star_count;
-static bool    stars_detected;
-
-static uint8_t art_neighbours(int16_t x, int16_t y) {
-    uint8_t count = 0;
-    for (int8_t dy = -1; dy <= 1; dy++) {
-        for (int8_t dx = -1; dx <= 1; dx++) {
-            count += (dx || dy) && art_pixel(x + dx, y + dy);
-        }
+// The art wraps around the screen as it drifts, but rays a star grows stop at the screen's edges,
+// otherwise they reappear as stray dots on the far side
+static void write_star_pixel(const sky_star_t *star, int8_t dx, int8_t dy, bool on) {
+    const int16_t screen_x = (star->x - shift + current->width) % current->width + dx;
+    if (on && (screen_x < 0 || screen_x >= current->width) && !art_pixel(star->x + dx, star->y + dy)) {
+        return;
     }
-    return count;
+    write_pixel(star->x + dx, star->y + dy, on);
 }
 
-// a star is a lone pixel or the centre of a plus
-static void detect_stars(void) {
-    stars_detected = true;
-    star_count     = 0;
-    for (int16_t y = 0; y < current->star_rows && star_count < SKY_MAX_STARS; y++) {
-        for (int16_t x = 0; x < current->width && star_count < SKY_MAX_STARS; x++) {
-            if (!art_pixel(x, y)) {
-                continue;
-            }
-            const uint8_t neighbours = art_neighbours(x, y);
-            const bool    plus       = neighbours == 4 && art_pixel(x - 1, y) && art_pixel(x + 1, y) && art_pixel(x, y - 1) && art_pixel(x, y + 1);
-            if (neighbours == 0 || plus) {
-                stars[star_count++] = (star_t){.x = x, .y = y, .plus = plus, .cross = !plus && (random8() & 1), .speed = random8_min_max(8, SKY_STAR_MAX_SPEED + 1), .offset = random16()};
-            }
-        }
-    }
-}
-
-static void draw_star_ring(const star_t *star, int8_t r, bool diagonal, bool on) {
+static void draw_star_ring(const sky_star_t *star, int8_t r, bool diagonal, bool on) {
     const int8_t d = diagonal ? r : 0;
-    write_pixel(star->x - r, star->y - d, on);
-    write_pixel(star->x + r, star->y + d, on);
-    write_pixel(star->x + d, star->y - r, on);
-    write_pixel(star->x - d, star->y + r, on);
+    write_star_pixel(star, -r, -d, on);
+    write_star_pixel(star, r, d, on);
+    write_star_pixel(star, d, -r, on);
+    write_star_pixel(star, -d, r, on);
 }
 
 // Sizes a star steps through, so a 1-bit pixel can brighten without jumping: dark, dot, small plus or x, longer plus, then detached tips
-static void draw_star_size(const star_t *star, uint8_t size, bool on) {
+static void draw_star_size(const sky_star_t *star, uint8_t size, bool on) {
     if (size >= 1) {
-        write_pixel(star->x, star->y, on);
+        write_star_pixel(star, 0, 0, on);
     }
     if (size >= 2) {
-        draw_star_ring(star, 1, star->cross, on);
+        draw_star_ring(star, 1, star->shape == SKY_DOT_X, on);
     }
     if (size >= 3) {
         draw_star_ring(star, 2, false, on);
@@ -105,6 +79,10 @@ static void draw_star_size(const star_t *star, uint8_t size, bool on) {
     if (size >= 4) {
         draw_star_ring(star, 4, false, on);
     }
+}
+
+static uint8_t rest_size(const sky_star_t *star) {
+    return star->shape == SKY_PLUS ? 2 : 1;
 }
 
 static uint8_t star_hash(uint8_t star, uint32_t slot, uint8_t salt) {
@@ -115,28 +93,45 @@ static uint8_t star_hash(uint8_t star, uint32_t slot, uint8_t salt) {
     return h >> 24;
 }
 
-// Every star pulses on its own clock like FastLED's TwinkleFOX, fast rise and slow fade, in some of its slots, and dips a size in a few others
+// Every star pulses on its own clock like FastLED's TwinkleFOX, fast rise and slow fade, in some of its slots, and dips a size in a few others;
+// a star whose turn comes while SKY_STAR_MAX_ACTIVE others animate skips it, so the sky never lights up all at once
 static void draw_stars(void) {
-    if (!stars_detected) {
-        detect_stars();
-    }
-    const uint32_t now = timer_read32();
-    for (uint8_t i = 0; i < star_count; i++) {
-        const star_t  *star  = &stars[i];
-        const uint32_t clock = (now * star->speed >> 3) + star->offset;
-        const uint32_t slot  = clock / SKY_STAR_PULSE;
-        const uint8_t  rest  = star->plus ? 2 : 1;
-        uint8_t        size  = rest;
-        if (star_hash(i, slot, 0) < SKY_STAR_DENSITY) {
+    const uint8_t  count = MIN(current->star_count, SKY_MAX_STARS);
+    const uint32_t now   = timer_read32();
+    uint32_t       slots[SKY_MAX_STARS];
+    uint8_t        sizes[SKY_MAX_STARS];
+    uint8_t        active = 0;
+    for (uint8_t i = 0; i < count; i++) {
+        const uint8_t rest = rest_size(&current->stars[i]);
+        // so stars at the same speed still don't pulse in step
+        const uint32_t clock = now + star_hash(i, 0, 2) * SKY_STAR_PULSE / 256;
+        slots[i]             = clock / SKY_STAR_PULSE;
+        sizes[i]             = rest;
+        if (star_hash(i, slots[i], 0) < SKY_STAR_DENSITY) {
             const uint8_t phase      = (clock % SKY_STAR_PULSE) * 256 / SKY_STAR_PULSE;
             const uint8_t brightness = phase < 86 ? phase * 3 : 255 - (phase - 86) - (phase - 86) / 2;
-            size                     = rest + (brightness * ((star->plus ? 4 : 2) - rest) + 127) / 255;
-        } else if (star_hash(i, slot, 1) < SKY_STAR_DIP_CHANCE && (clock % SKY_STAR_PULSE) * 8 / star->speed < SKY_STAR_DIP_TIME) {
-            size = rest - 1;
+            sizes[i]                 = rest + (brightness * rest + 127) / 255;
+        } else if (star_hash(i, slots[i], 1) < SKY_STAR_DIP_CHANCE && clock % SKY_STAR_PULSE < SKY_STAR_DIP_TIME) {
+            sizes[i] = rest - 1;
         }
-        if (size != rest) {
+        if (sizes[i] != rest && turns[i].turn == slots[i] && turns[i].turn_taken) {
+            active++;
+        }
+    }
+    for (uint8_t i = 0; i < count; i++) {
+        const sky_star_t *star = &current->stars[i];
+        const uint8_t     rest = rest_size(star);
+        if (sizes[i] == rest) {
+            continue;
+        }
+        if (turns[i].turn != slots[i]) {
+            turns[i].turn       = slots[i];
+            turns[i].turn_taken = active < SKY_STAR_MAX_ACTIVE;
+            active += turns[i].turn_taken;
+        }
+        if (turns[i].turn_taken) {
             draw_star_size(star, rest, false);
-            draw_star_size(star, size, true);
+            draw_star_size(star, sizes[i], true);
         }
     }
 }
@@ -270,7 +265,6 @@ void sky_render(const sky_t *sky) {
         current         = sky;
         rows            = sky->size / sky->width * 8;
         shift           = 0;
-        stars_detected  = false;
         aurora_detected = false;
     }
     // human-timed mod changes keep the effects from replaying the same sequence every boot

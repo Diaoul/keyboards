@@ -154,15 +154,15 @@ combo_t key_combos[] = {
 };
 #endif // COMBO_ENABLE
 
-// The other half can stamp a key press slightly ahead of this half's synced clock, and QMK's unsigned elapsed
+// The primary half can stamp a key press slightly ahead of the secondary half's synced clock, and QMK's unsigned elapsed
 // time then wraps to nearly UINT32_MAX; read that as just now (https://github.com/qmk/qmk_firmware/issues/26544)
 uint32_t input_idle_time(void) {
     const uint32_t idle = last_input_activity_elapsed();
     return idle > UINT32_MAX - 1000 ? 0 : idle;
 }
 
-// RGB_MATRIX_TIMEOUT judges idleness on each half with that wrapping elapsed time, so the master decides
-// instead and QMK syncs its suspend state to the other half (https://github.com/qmk/qmk_firmware/issues/26544)
+// RGB_MATRIX_TIMEOUT judges idleness on each half with that wrapping elapsed time, so the primary half
+// decides instead and QMK syncs its suspend state to the secondary half (https://github.com/qmk/qmk_firmware/issues/26544)
 #if defined(RGB_MATRIX_ENABLE) && defined(RGB_IDLE_TIMEOUT)
 static void rgb_idle_task(void) {
     static bool was_idle = false;

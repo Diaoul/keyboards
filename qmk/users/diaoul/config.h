@@ -36,7 +36,7 @@
 
 // RGB Matrix (https://docs.qmk.fm/features/rgb_matrix#additional-config-h-options)
 #define RGB_MATRIX_SLEEP
-// RGB_MATRIX_TIMEOUT blinks the half without USB (https://github.com/qmk/qmk_firmware/issues/26544), see diaoul.c
+// RGB_MATRIX_TIMEOUT blinks the secondary half (https://github.com/qmk/qmk_firmware/issues/26544), see diaoul.c
 #define RGB_IDLE_TIMEOUT 300000 // in ms
 
 // OLED (https://docs.qmk.fm/features/oled_driver)

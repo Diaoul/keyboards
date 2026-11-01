@@ -47,11 +47,11 @@ static struct {
     bool     turn_taken; // false when the cap was reached as the turn came
 } turns[SKY_MAX_STARS];
 
-// The art wraps around the screen as it drifts, but rays a star grows stop at the screen's edges,
-// otherwise they reappear as stray dots on the far side
+// The art wraps around the display as it drifts, but rays a star grows stop at the display's edges,
+// otherwise they reappear as stray dots on the far edge
 static void write_star_pixel(const sky_star_t *star, int8_t dx, int8_t dy, bool on) {
-    const int16_t screen_x = (star->x - drift + current->width) % current->width + dx;
-    if (on && (screen_x < 0 || screen_x >= current->width) && !art_pixel(star->x + dx, star->y + dy)) {
+    const int16_t display_x = (star->x - drift + current->width) % current->width + dx;
+    if (on && (display_x < 0 || display_x >= current->width) && !art_pixel(star->x + dx, star->y + dy)) {
         return;
     }
     write_pixel(star->x + dx, star->y + dy, on);
@@ -65,23 +65,23 @@ static void draw_star_ring(const sky_star_t *star, int8_t r, bool diagonal, bool
     write_star_pixel(star, -d, r, on);
 }
 
-// so a 1-bit star brightens in steps instead of jumping straight to its full size
-static void draw_star_size(const sky_star_t *star, uint8_t size, bool on) {
-    if (size >= 1) {
+// so a 1-bit star brightens step by step instead of jumping straight to its brightest
+static void draw_star_step(const sky_star_t *star, uint8_t step, bool on) {
+    if (step >= 1) {
         write_star_pixel(star, 0, 0, on);
     }
-    if (size >= 2) {
+    if (step >= 2) {
         draw_star_ring(star, 1, star->shape == SKY_STAR_DOT_X, on);
     }
-    if (size >= 3) {
+    if (step >= 3) {
         draw_star_ring(star, 2, false, on);
     }
-    if (size >= 4) {
+    if (step >= 4) {
         draw_star_ring(star, 4, false, on);
     }
 }
 
-static uint8_t rest_size(const sky_star_t *star) {
+static uint8_t rest_step(const sky_star_t *star) {
     return star->shape == SKY_STAR_PLUS ? 2 : 1;
 }
 
@@ -98,29 +98,29 @@ static void draw_stars(void) {
     const uint8_t  count = MIN(current->star_count, SKY_MAX_STARS);
     const uint32_t now   = timer_read32();
     uint32_t       slots[SKY_MAX_STARS];
-    uint8_t        sizes[SKY_MAX_STARS];
+    uint8_t        steps[SKY_MAX_STARS];
     uint8_t        active = 0;
     for (uint8_t i = 0; i < count; i++) {
-        const uint8_t rest = rest_size(&current->stars[i]);
-        // so stars at the same speed still don't twinkle in step
+        const uint8_t rest = rest_step(&current->stars[i]);
+        // so stars at the same speed still don't twinkle in sync
         const uint32_t clock = now + star_hash(i, 0, 2) * SKY_STAR_TWINKLE_TIME / 256;
         slots[i]             = clock / SKY_STAR_TWINKLE_TIME;
-        sizes[i]             = rest;
+        steps[i]             = rest;
         if (star_hash(i, slots[i], 0) < SKY_STAR_TWINKLE_CHANCE) {
             const uint8_t phase      = (clock % SKY_STAR_TWINKLE_TIME) * 256 / SKY_STAR_TWINKLE_TIME;
             const uint8_t brightness = phase < 86 ? phase * 3 : 255 - (phase - 86) - (phase - 86) / 2;
-            sizes[i]                 = rest + (brightness * rest + 127) / 255;
+            steps[i]                 = rest + (brightness * rest + 127) / 255;
         } else if (star_hash(i, slots[i], 1) < SKY_STAR_DIP_CHANCE && clock % SKY_STAR_TWINKLE_TIME < SKY_STAR_DIP_TIME) {
-            sizes[i] = rest - 1;
+            steps[i] = rest - 1;
         }
-        if (sizes[i] != rest && turns[i].turn == slots[i] && turns[i].turn_taken) {
+        if (steps[i] != rest && turns[i].turn == slots[i] && turns[i].turn_taken) {
             active++;
         }
     }
     for (uint8_t i = 0; i < count; i++) {
         const sky_star_t *star = &current->stars[i];
-        const uint8_t     rest = rest_size(star);
-        if (sizes[i] == rest) {
+        const uint8_t     rest = rest_step(star);
+        if (steps[i] == rest) {
             continue;
         }
         if (turns[i].turn != slots[i]) {
@@ -129,8 +129,8 @@ static void draw_stars(void) {
             active += turns[i].turn_taken;
         }
         if (turns[i].turn_taken) {
-            draw_star_size(star, rest, false);
-            draw_star_size(star, sizes[i], true);
+            draw_star_step(star, rest, false);
+            draw_star_step(star, steps[i], true);
         }
     }
 }
@@ -153,7 +153,7 @@ static void draw_meteor(void) {
         active = true;
         vx     = random8_min_max(2, 11) * (random8_max(2) ? 1 : -1);
         vy     = random8_min_max(3, 7);
-        // start just off screen so the first step brings it in
+        // start just off the display so the first move brings it in
         if (random8_max(3) == 0) {
             x = random8_max(current->width) * 4;
             y = -1;
@@ -182,7 +182,7 @@ static void draw_meteor(void) {
         const int16_t ty = (y - k * vy * 4 / speed) >> 2;
         if (tx >= 0 && tx < current->width && ty >= 0 && ty < current->meteor_rows) {
             visible = true;
-            // the meteor flies in screen coordinates
+            // the meteor flies in display coordinates
             write_pixel(tx + drift, ty, true);
         }
     }
@@ -221,7 +221,7 @@ static void detect_aurora(void) {
     }
 }
 
-// A 1-bit panel has no grey, so solid aurora is dithered to read as light
+// A 1-bit display has no grey, so solid aurora is dithered to read as light
 static void draw_aurora(void) {
     static const uint8_t bayer[4][4] = {{0, 8, 2, 10}, {12, 4, 14, 6}, {3, 11, 1, 9}, {15, 7, 13, 5}};
     static uint32_t      timer       = 0;
@@ -235,7 +235,7 @@ static void draw_aurora(void) {
     }
     if (timer_elapsed32(timer) >= SKY_AURORA_FRAME_INTERVAL) {
         timer = timer_read32();
-        phase += SKY_AURORA_PHASE_STEP;
+        phase += SKY_AURORA_SPEED;
     }
     const uint16_t end = MIN(current->size, SKY_MASK_SIZE);
     for (uint16_t i = current->aurora_top / 8 * current->width; i < end; i++) {

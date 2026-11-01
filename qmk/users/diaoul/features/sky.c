@@ -65,7 +65,7 @@ static void draw_star_ring(const sky_star_t *star, int8_t r, bool diagonal, bool
     write_star_pixel(star, -d, r, on);
 }
 
-// Sizes a star steps through, so a 1-bit pixel can brighten without jumping: dark, dot, small plus or x, longer plus, then detached tips
+// so a 1-bit star brightens in steps instead of jumping straight to its full size
 static void draw_star_size(const sky_star_t *star, uint8_t size, bool on) {
     if (size >= 1) {
         write_star_pixel(star, 0, 0, on);
@@ -93,8 +93,7 @@ static uint8_t star_hash(uint8_t star, uint32_t slot, uint8_t salt) {
     return h >> 24;
 }
 
-// Every star pulses on its own clock like FastLED's TwinkleFOX, fast rise and slow fade, in some of its slots, and dips a size in a few others;
-// a star whose turn comes while SKY_STAR_MAX_ACTIVE others animate skips it, so the sky never lights up all at once
+// Modelled on FastLED's TwinkleFOX; a star whose turn comes while SKY_STAR_MAX_ACTIVE others animate skips it, so the sky never lights up all at once
 static void draw_stars(void) {
     const uint8_t  count = MIN(current->star_count, SKY_MAX_STARS);
     const uint32_t now   = timer_read32();
@@ -136,7 +135,6 @@ static void draw_stars(void) {
     }
 }
 
-// A shooting star now and then, entering from a side or the top at a random angle, with a flickering tail
 static void draw_meteor(void) {
     static uint32_t timer  = 0;
     static uint16_t wait   = SKY_METEOR_MIN_WAIT;
@@ -250,7 +248,6 @@ static void draw_aurora(void) {
                 continue;
             }
             const uint8_t y = i / current->width * 8 + bit;
-            // faint brighter bands travel down the rays, out of 16 levels
             const uint8_t level = SKY_AURORA_LEVEL - SKY_AURORA_SHIMMER + scale8(sin8(y * 6 - x * 3 - phase), 2 * SKY_AURORA_SHIMMER + 1);
             // the art is lit here and the aurora draws first, so flipping turns the pixel off
             if (bayer[y % 4][x % 4] >= level) {

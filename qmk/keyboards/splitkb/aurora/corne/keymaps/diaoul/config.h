@@ -22,11 +22,9 @@
 #define EXHAUST_FRAME_INTERVAL 50 // in ms
 
 // Split (https://docs.qmk.fm/features/split_keyboard)
-// Status OLED and RGB follow the side, not the USB half, so the other half needs this state
 #define SPLIT_LAYER_STATE_ENABLE
 #define SPLIT_LED_STATE_ENABLE
 #define SPLIT_MODS_ENABLE
 #define SPLIT_WPM_ENABLE
 #define SPLIT_ACTIVITY_ENABLE
-#define CAPS_WORD_SPLIT_SYNC
-#define SPLIT_TRANSACTION_IDS_USER USER_SYNC_CAPS_WORD
+// TODO: add support for caps word sync, see https://github.com/qmk/qmk_firmware/issues/26556

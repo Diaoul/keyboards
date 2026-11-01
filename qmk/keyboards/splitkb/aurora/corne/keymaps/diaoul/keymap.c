@@ -180,7 +180,7 @@ bool oled_task_user(void) {
         render_kb_LED_state(0, 7);
         render_layer_state(0, 8);
         render_mod_status_alt_gui(get_mods() | get_oneshot_mods(), 0, 12);
-        render_mod_status_shift_ctrl(get_mods() | get_oneshot_mods(), is_caps_word_on_split(), 0, 14);
+        render_mod_status_shift_ctrl(get_mods() | get_oneshot_mods(), is_caps_word_on(), 0, 14);
     } else {
         render_sky();
     }

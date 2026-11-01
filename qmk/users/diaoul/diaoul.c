@@ -154,38 +154,6 @@ combo_t key_combos[] = {
 };
 #endif // COMBO_ENABLE
 
-// Caps Word lives on the master only; QMK has no built-in split sync for it
-#if defined(CAPS_WORD_ENABLE) && defined(CAPS_WORD_SPLIT_SYNC)
-#    include "transactions.h"
-
-static bool caps_word_on_slave = false;
-
-static void caps_word_sync_slave_handler(uint8_t in_len, const void* in_data, uint8_t out_len, void* out_data) {
-    if (in_len == sizeof(bool)) {
-        caps_word_on_slave = *(const bool*)in_data;
-    }
-}
-
-bool is_caps_word_on_split(void) {
-    return is_keyboard_master() ? is_caps_word_on() : caps_word_on_slave;
-}
-
-void keyboard_post_init_user(void) {
-    transaction_register_rpc(USER_SYNC_CAPS_WORD, caps_word_sync_slave_handler);
-}
-
-static void caps_word_sync_task(void) {
-    if (!is_keyboard_master()) {
-        return;
-    }
-    static bool last_sent = false;
-    const bool  on        = is_caps_word_on();
-    if (on != last_sent && transaction_rpc_send(USER_SYNC_CAPS_WORD, sizeof(on), &on)) {
-        last_sent = on;
-    }
-}
-#endif // CAPS_WORD_ENABLE && CAPS_WORD_SPLIT_SYNC
-
 // The other half can stamp a key press slightly ahead of this half's synced clock, and QMK's unsigned elapsed
 // time then wraps to nearly UINT32_MAX; read that as just now (https://github.com/qmk/qmk_firmware/issues/26544)
 uint32_t input_idle_time(void) {
@@ -209,13 +177,8 @@ static void rgb_idle_task(void) {
     }
     was_idle = idle;
 }
-#endif // RGB_MATRIX_ENABLE && RGB_IDLE_TIMEOUT
 
 void housekeeping_task_user(void) {
-#if defined(CAPS_WORD_ENABLE) && defined(CAPS_WORD_SPLIT_SYNC)
-    caps_word_sync_task();
-#endif
-#if defined(RGB_MATRIX_ENABLE) && defined(RGB_IDLE_TIMEOUT)
     rgb_idle_task();
-#endif
 }
+#endif // RGB_MATRIX_ENABLE && RGB_IDLE_TIMEOUT

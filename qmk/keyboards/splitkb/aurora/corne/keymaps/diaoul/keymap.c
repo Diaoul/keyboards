@@ -73,7 +73,7 @@ static void render_logo(void) {
     sky_render(&sky);
 }
 
-// Exhaust streaming out of the username, faster the faster you type
+// Particles streaming left to right along one line, faster the faster you type
 static void render_exhaust(uint8_t line) {
     static struct {
         uint16_t x; // in 1/16 px

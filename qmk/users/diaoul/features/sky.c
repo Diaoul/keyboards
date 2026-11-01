@@ -5,7 +5,7 @@
 
 static const sky_t *current;
 static uint8_t      rows;
-static uint8_t      shift;
+static uint8_t      drift;
 // pixels the effects invert from the art this frame
 static uint8_t flip[SKY_MASK_SIZE];
 
@@ -38,7 +38,7 @@ static void update_drift(void) {
     static uint32_t timer = 0;
     if (timer_elapsed32(timer) > SKY_DRIFT_INTERVAL) {
         timer = timer_read32();
-        shift = (shift + 1) % current->width;
+        drift = (drift + 1) % current->width;
     }
 }
 
@@ -50,7 +50,7 @@ static struct {
 // The art wraps around the screen as it drifts, but rays a star grows stop at the screen's edges,
 // otherwise they reappear as stray dots on the far side
 static void write_star_pixel(const sky_star_t *star, int8_t dx, int8_t dy, bool on) {
-    const int16_t screen_x = (star->x - shift + current->width) % current->width + dx;
+    const int16_t screen_x = (star->x - drift + current->width) % current->width + dx;
     if (on && (screen_x < 0 || screen_x >= current->width) && !art_pixel(star->x + dx, star->y + dy)) {
         return;
     }
@@ -71,7 +71,7 @@ static void draw_star_size(const sky_star_t *star, uint8_t size, bool on) {
         write_star_pixel(star, 0, 0, on);
     }
     if (size >= 2) {
-        draw_star_ring(star, 1, star->shape == SKY_DOT_X, on);
+        draw_star_ring(star, 1, star->shape == SKY_STAR_DOT_X, on);
     }
     if (size >= 3) {
         draw_star_ring(star, 2, false, on);
@@ -82,7 +82,7 @@ static void draw_star_size(const sky_star_t *star, uint8_t size, bool on) {
 }
 
 static uint8_t rest_size(const sky_star_t *star) {
-    return star->shape == SKY_PLUS ? 2 : 1;
+    return star->shape == SKY_STAR_PLUS ? 2 : 1;
 }
 
 static uint8_t star_hash(uint8_t star, uint32_t slot, uint8_t salt) {
@@ -102,15 +102,15 @@ static void draw_stars(void) {
     uint8_t        active = 0;
     for (uint8_t i = 0; i < count; i++) {
         const uint8_t rest = rest_size(&current->stars[i]);
-        // so stars at the same speed still don't pulse in step
-        const uint32_t clock = now + star_hash(i, 0, 2) * SKY_STAR_PULSE / 256;
-        slots[i]             = clock / SKY_STAR_PULSE;
+        // so stars at the same speed still don't twinkle in step
+        const uint32_t clock = now + star_hash(i, 0, 2) * SKY_STAR_TWINKLE_TIME / 256;
+        slots[i]             = clock / SKY_STAR_TWINKLE_TIME;
         sizes[i]             = rest;
-        if (star_hash(i, slots[i], 0) < SKY_STAR_DENSITY) {
-            const uint8_t phase      = (clock % SKY_STAR_PULSE) * 256 / SKY_STAR_PULSE;
+        if (star_hash(i, slots[i], 0) < SKY_STAR_TWINKLE_CHANCE) {
+            const uint8_t phase      = (clock % SKY_STAR_TWINKLE_TIME) * 256 / SKY_STAR_TWINKLE_TIME;
             const uint8_t brightness = phase < 86 ? phase * 3 : 255 - (phase - 86) - (phase - 86) / 2;
             sizes[i]                 = rest + (brightness * rest + 127) / 255;
-        } else if (star_hash(i, slots[i], 1) < SKY_STAR_DIP_CHANCE && clock % SKY_STAR_PULSE < SKY_STAR_DIP_TIME) {
+        } else if (star_hash(i, slots[i], 1) < SKY_STAR_DIP_CHANCE && clock % SKY_STAR_TWINKLE_TIME < SKY_STAR_DIP_TIME) {
             sizes[i] = rest - 1;
         }
         if (sizes[i] != rest && turns[i].turn == slots[i] && turns[i].turn_taken) {
@@ -183,7 +183,7 @@ static void draw_meteor(void) {
         if (tx >= 0 && tx < current->width && ty >= 0 && ty < current->meteor_rows) {
             visible = true;
             // the meteor flies in screen coordinates
-            write_pixel(tx + shift, ty, true);
+            write_pixel(tx + drift, ty, true);
         }
     }
     if (!visible && frame > 0) {
@@ -261,7 +261,7 @@ void sky_render(const sky_t *sky) {
     if (sky != current) {
         current         = sky;
         rows            = sky->size / sky->width * 8;
-        shift           = 0;
+        drift           = 0;
         aurora_detected = false;
     }
     // human-timed mod changes keep the effects from replaying the same sequence every boot
@@ -277,7 +277,7 @@ void sky_render(const sky_t *sky) {
     draw_stars();
     draw_meteor();
     for (uint16_t i = 0; i < sky->size; i++) {
-        const uint16_t source = i / sky->width * sky->width + (i % sky->width + shift) % sky->width;
+        const uint16_t source = i / sky->width * sky->width + (i % sky->width + drift) % sky->width;
         uint8_t        data   = pgm_read_byte(&sky->art[source]);
         if (source < SKY_MASK_SIZE) {
             data ^= flip[source];

@@ -21,7 +21,7 @@ COMBO_ENABLE ?= yes
 
 ifeq ($(strip $(OLED_ENABLE)), yes)
   SRC += features/oled.c
-endif
-ifeq ($(strip $(SKY_ENABLE)), yes)
-  SRC += features/sky.c
+  ifeq ($(strip $(SKY_ENABLE)), yes)
+    SRC += features/sky.c
+  endif
 endif

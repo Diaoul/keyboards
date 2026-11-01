@@ -52,7 +52,7 @@ void keyboard_pre_init_user(void) {
 #ifdef OLED_ENABLE
 #    include "features/sky.h"
 
-// rotated 270, so a line is as wide as the panel is tall
+// rotated 270, so a line is as wide as the display is tall
 #    define OLED_LINE_WIDTH OLED_DISPLAY_HEIGHT
 
 static void render_logo(void) {

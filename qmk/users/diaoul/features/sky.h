@@ -4,7 +4,7 @@
 
 // Defaults below can be overridden in config.h
 
-// Art drift, which spreads OLED wear
+// Art drift, which spreads display wear
 #ifndef SKY_DRIFT_INTERVAL
 #    define SKY_DRIFT_INTERVAL 10000 // ms per pixel
 #endif
@@ -51,8 +51,8 @@
 #ifndef SKY_AURORA_FRAME_INTERVAL
 #    define SKY_AURORA_FRAME_INTERVAL 100 // in ms
 #endif
-#ifndef SKY_AURORA_PHASE_STEP
-#    define SKY_AURORA_PHASE_STEP 4 // a shimmer wave takes 256 / step frames to pass
+#ifndef SKY_AURORA_SPEED
+#    define SKY_AURORA_SPEED 4 // a shimmer wave takes 256 / speed frames to pass
 #endif
 #ifndef SKY_AURORA_LEVEL
 #    define SKY_AURORA_LEVEL 9 // lit share of solid aurora, out of 16
@@ -75,9 +75,9 @@ typedef struct {
 
 // Art animated as a night sky: its stars twinkle, a meteor crosses it and its solid areas shimmer
 typedef struct {
-    const char       *art; // PROGMEM, in OLED buffer order
+    const char       *art; // PROGMEM, in display buffer order
     uint16_t          size; // in bytes, at most SKY_MASK_SIZE
-    uint8_t           width; // pixels per OLED line
+    uint8_t           width; // pixels per display line
     const sky_star_t *stars; // at most SKY_MAX_STARS
     uint8_t           star_count;
     uint8_t           meteor_rows; // a meteor crosses the rows above this, 0 for none
@@ -85,5 +85,5 @@ typedef struct {
     uint8_t           aurora_bottom;
 } sky_t;
 
-// Renders the sky from the top of the OLED; one sky per display, as they share state
+// Renders the sky from the top of the display; one sky per display, as they share state
 void sky_render(const sky_t *sky);
